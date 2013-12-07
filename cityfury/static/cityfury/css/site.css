@@ -190,7 +190,7 @@ header .tagline-col {
     margin-right: 10px;
 }
 
-#content, #packery {
+#content {
     float: left;
     width: 100%;
     margin: 10px;

@@ -1,3 +1,5 @@
+{% load bootstrap_pagination %}
+
 <html>
     <head>
 
@@ -19,10 +21,13 @@
         <link rel="stylesheet" href="/static/cityfury/css/site.css">
 
         {% if posts %}
+        <script src="{{ STATIC_URL }}cityfury/js/jquery.appear.js"></script>
         <script src="{{ STATIC_URL }}cityfury/js/packery.pkgd.min.js"></script>
         <script src="{{ STATIC_URL }}cityfury/js/jquery-ui-1.10.3.custom.js"></script>
         <script>
             $(function () {
+
+                // Packery stuff
                 var container = document.querySelector('#packery');
                 var pckry = new Packery(container, {
                     itemSelector: '.item',
@@ -86,16 +91,12 @@
         </header>
             <div id="main-container">
                 <div class="full-height {% if open_category_nav %}maximized{% else %}minimized{% endif %}" id="first-nav">
-                        <a class="minimize-control glyphicon glyphicon-align-justify"></a>
-                        <h3 class="lead"><span class="nav-title">Categories</span></h3>
-                        <ul>
-                            <li {% if category.name == "All" %}class="active"{% endif %}><a href="/">All</a></li>
-                            {% for c in categories %}
-                                {% if city.name %}
-                                    <li {% if category == c %}class="active"{% endif %}><a href="{% url "category" c.name|lower %}">{{ c.name }}</a></li>
-                            {% else %}
-                                <li {% if category == c %}class="active"{% endif %}><a href="{% url "city" category.name|lower c.name|lower %}">{{ c.name }}</a></li>
-                            {% endif %}
+                    <a class="minimize-control glyphicon glyphicon-align-justify"></a>
+                    <h3 class="lead"><span class="nav-title">Categories</span></h3>
+                    <ul>
+                        <li {% if category.name == "All" %}class="active"{% endif %}><a href="/">All</a></li>
+                        {% for c in categories %}
+                            <li {% if category == c %}class="active"{% endif %}><a href="{% url "category" c.name|lower %}">{{ c.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -105,9 +106,13 @@
                         <a class="minimize-control glyphicon glyphicon-align-justify"></a>
                         <h3 class="lead"><span class="nav-title">Cities</span></h3>
                         <ul>
-                            <li class="{% if city.name|lower == "all" %}active{% endif %}"><a href="{% url "category" category.name|lower %}">All</a></li>
+                            <li class="{% if city.name|lower == "all" %}active{% endif %}"><a href="{% if category %}{% url "category" category.name|lower %}{% else %}/{% endif %}">All</a></li>
                             {% for c in cities %}
-                                <li class="{% if c == city %}active{% endif %}"><a href="{% url "city" category.name|lower c.name|lower %}">{{ c.name }}</a></li>
+                                {% if category.name %}
+                                    <li class="{% if c == city %}active{% endif %}"><a href="{% url "city" category.name|lower c.name|lower %}">{{ c.name }}</a></li>
+                                {% else %}
+                                    <li class="{% if c == city %}active{% endif %}"><a href="{% url "city" "all" c.name|lower %}">{{ c.name }}</a></li>
+                                {% endif %}
                             {% endfor %}
                         </ul>
                     {% endblock %}
@@ -125,7 +130,22 @@
                             <li class="active">{{ city.name }}</li>
                         {% endif %}
                     </ol>
-                    {% include "cityfury/includes/packery_posts.html" %}
+
+                    <div id="content">
+                    {% if posts.has_next or posts.has_prev %}
+                        {% bootstrap_paginate posts range=10 show_first_last="true" %}
+                    {% endif %}
+                    <div id="packery">
+                        {% for post in posts %}
+                            {% include "cityfury/includes/packery_posts.html" %}
+                        {% endfor %}
+                    </div>
+
+                    {% if posts.has_next or posts.has_prev %}
+                        {% bootstrap_paginate posts range=10 show_first_last="true" %}
+                    {% endif %}
+
+                    </div>
 
                     {% endblock %}
                 </div>

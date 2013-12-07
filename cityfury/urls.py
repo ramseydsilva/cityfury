@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'cityfury.views.home', name='home'),
     url(r'^upload/', include('fileupload.urls')),
+    url(r'^get_posts/$', 'cityfury.post_views.get_posts', name="get_posts"),
     url(r'^post/$', PostCreateView.as_view(), name='post_form'),
     url(r'^cities/data/$', 'cityfury.form_views.cities_data', name='cities_data'),
     url(r'^areas/data/$', 'cityfury.form_views.areas_data', name='areas_data'),

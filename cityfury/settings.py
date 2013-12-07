@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'south',
     'fileupload',
     'django_select2',
+    'bootstrap-pagination',
     'sorl.thumbnail',
     'cityfury'
 )

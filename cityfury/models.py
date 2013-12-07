@@ -88,6 +88,9 @@ class Post(models.Model):
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     uploaded_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ("-uploaded_date",)
+
     def __unicode__(self):
         if not self.caption:
             return "No caption: %s" %( self.id )
@@ -97,7 +100,7 @@ class Post(models.Model):
         return reverse('city', args=[self.city.name.lower(), self.category.name.lower()])
 
     def get_city_absolute_url(self):
-        return get_category_absolute_url()
+        return self.get_category_absolute_url()
 
     def get_absolute_url(self):
         return reverse('post', args=[self.id])

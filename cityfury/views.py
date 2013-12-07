@@ -2,15 +2,29 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from cityfury.models import *
 
 
 def home(request):
     category = city = {'name': 'All'}
+
+    posts = Post.objects.all()
+    paginator = Paginator(posts, 50)
+
+    page = request.GET.get('page')
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+
     context = {
         'city': city,
         'category': category,
-        'posts': Post.objects.all().order_by("-uploaded_date"),
+        'posts': posts,
         'open_city_nav': True,
         'open_category_nav': True
     }
