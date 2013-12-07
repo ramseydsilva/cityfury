@@ -96,11 +96,8 @@ class Post(models.Model):
             return "No caption: %s" %( self.id )
         return self.caption
 
-    def get_category_absolute_url(self):
-        return reverse('city', args=[self.city.name.lower(), self.category.name.lower()])
-
     def get_city_absolute_url(self):
-        return self.get_category_absolute_url()
+        return reverse('city', args=[self.category.name.lower(), self.city.name.lower()])
 
     def get_absolute_url(self):
         return reverse('post', args=[self.id])

@@ -77,6 +77,8 @@ def post(request, post_id):
         comment = request.POST["comment"]
         if comment != "":
             comment = Comment(comment=comment, post=post)
+            if not request.user.is_anonymous():
+                comment.user = request.user
             comment.save()
         return redirect(reverse("post", args=[post.id]))
 

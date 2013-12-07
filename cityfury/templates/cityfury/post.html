@@ -40,7 +40,7 @@
                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
             {% endthumbnail %}
                 <div class="caption lead">
-                    {{ post.caption }}
+                    <span>{{ post.caption }}</span>
                     <div class="dislike-counter">{{ post.dislike_set.count }} <span class="glyphicon glyphicon-thumbs-down"></span></div>
                     <a href="#comment"><div class="comment-counter">{{ post.comment_set.count }} <span class="glyphicon glyphicon-comment"></span></div></a>
                 </div>
@@ -62,12 +62,11 @@
             </div>
         </div>
         <div class="lead info-col col-md-2">
-            Category: <a href="{{ post.get_category_absolute_url }}">{{ post.category.name }}</a><br/>
+            Category: <a href="{{ post.get_city_absolute_url }}">{{ post.category.name }}</a><br/>
             City: <a href="{{ post.get_city_absolute_url }}">{{ post.city.name }}</a><br/>
             Area: {{ post.area.name }}<br/>
             Location: {{ post.location_string }}<br/>
-            Uploaded By: {% if post.user %}{{ user.username }}{% else %}Anonymous{% endif %}<br/>
-            Date Uploaded: {{ post.uploaded_date }}<br/>
+            Posted by {% if post.user %}{{ user.username }}{% else %}Anonymous{% endif %} on {{ post.uploaded_date }}<br/>
         </div>
         <div class="more-info-col col-md-1">
             &nbsp;

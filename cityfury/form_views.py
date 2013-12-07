@@ -31,14 +31,13 @@ class PostCreateView(CreateView):
     form_class = PostForm
     template_name = "cityfury/post_form.html"
 
-    def form_invalid(self, form):
-        print self.request.POST
-        return super(PostCreateView, self).form_invalid(form)
-
     def form_valid(self, form):
-        self.object = form.save()
-        files = [serialize(self.object, file_attr="image")]
-        data = {'files': files, 'post_url': self.object.get_absolute_url() }
+        post = form.save()
+        if not self.request.user.is_anonymous():
+            post.user = self.request.user
+            post.save()
+        files = [serialize(post, file_attr="image")]
+        data = {'files': files, 'post_url': post.get_absolute_url() }
         response = JSONResponse(data, mimetype=response_mimetype(self.request))
         response['Content-Disposition'] = 'inline; filename=files.json'
         return response

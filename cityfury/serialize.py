@@ -30,9 +30,7 @@ def serialize(instance, file_attr='file'):
         'name': order_name(obj.name),
         'type': mimetypes.guess_type(obj.path)[0] or 'image/png',
         'thumbnailUrl': obj.url,
-        'size': obj.size,
-        'deleteUrl': reverse('upload-delete', args=[instance.pk]),
-        'deleteType': 'DELETE',
+        'size': obj.size
     }
 
 

@@ -9,7 +9,11 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'cityfury.views.home', name='home'),
-    url(r'^upload/', include('fileupload.urls')),
+
+    url(r'^logout/$', 'cityfury.user_views.logout_view', name='logout'),
+    url(r'^login/$', 'cityfury.user_views.login_view', name='login'),
+    url(r'^register/$', 'cityfury.user_views.register_view', name='register'),
+
     url(r'^get_posts/$', 'cityfury.post_views.get_posts', name="get_posts"),
     url(r'^post/$', PostCreateView.as_view(), name='post_form'),
     url(r'^cities/data/$', 'cityfury.form_views.cities_data', name='cities_data'),

@@ -185,15 +185,25 @@ header .tagline-col {
     color: #428bca;
 }
 
-#uploadAPic {
+.user-auth-links , #uploadAPic {
+    font-size: 16px;
+    margin: 0 5px; 
     float: right;
-    margin-right: 10px;
+}
+
+.user-auth-links {
+    margin: 5px 7px;
+}
+
+a.user-auth-links:hover {
+    text-decoration: none;
+    color: #77BFFD;
 }
 
 #content {
     float: left;
     width: 100%;
-    margin: 10px;
+    padding: 10px;
 }
 
 footer {
@@ -224,6 +234,7 @@ footer {
 #post-container .caption { color: #F0F0F0; }
 .caption { float: left; width: 100%; position: absolute; bottom: 0; background-color: rgba(0,0,0,0.4);
             padding: 10px 2%; text-align: left; margin: 0; font-size: 17px; }
+.caption span { width: 93%; display: block; }
 .dislike-counter, .comment-counter { cursor: pointer; position: absolute; bottom: 10px; font-size: 16px; }
 #post-container .dislike-counter, #post-container .comment-counter { color: rgb(62, 194, 212); }
 #post-container .dislike-counter:hover, #post-container .comment-counter:hover { color: rgb(67, 131, 201); }
@@ -234,3 +245,7 @@ footer {
 #packery a { color: #FFFFED; }
 #packery a:hover { color: #E4EBB5; }
 #packery .item .dislike-counter, #packery .item .comment-counter { font-size: 14px;  }
+
+.alert {
+    padding: 10px 15px;
+}

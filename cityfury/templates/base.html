@@ -86,6 +86,13 @@
             <div class="tagline-col">
                 <p class="lead">Angry Citizens Unite!
                     <a id="uploadAPic" class="btn btn-success" href="/post/">Upload A Pic</a>
+                    {% if user.is_anonymous %}
+                        <a class="user-auth-links register" href="{% url "register" %}?next={{ request.path }}">Register</a>
+                        <a class="user-auth-links login" href="{% url "login" %}?next={{ request.path }}">Login</a>
+                    {% else %}
+                        <a class="user-auth-links logout" href="{% url "logout" %}?next={{ request.path }}">Logout</a>
+                        <span class="user-auth-links greeting">Welcome {{ request.user.username }}</span>
+                    {% endif %}
                 </p>
             </div>
         </header>
