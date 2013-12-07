@@ -21,7 +21,7 @@ SECRET_KEY = 'umm8bk7j4d^8b!qbz5gmvbofg7y(@(hojh+063g-1h^zol*uoo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+THUMBNAIL_DEBUG = True
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -36,6 +36,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'south',
+    'fileupload',
+    'django_select2',
+    'sorl.thumbnail',
     'cityfury'
 )
 
@@ -76,10 +80,22 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT = os.path.abspath(os.path.dirname(__file__)) + '/media/'
+MEDIA_URL = '/media/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
+STATIC_ROOT = os.path.abspath(os.path.dirname(__file__)) + '/static/'
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/cityfury/live/src/cityfury/cityfury/static'
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.request',
+    'django.core.context_processors.static',
+    'cityfury.context_processors.main',
+)

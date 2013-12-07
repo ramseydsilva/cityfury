@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <script>
+        $(function () {
+            $(".info-col, .more-info-col").css("height", $("#main").height() - $('#main .breadcrumb').outerHeight());
+            $(".comment-counter").click(function() {
+                $("textarea").focus();
+            });
+        });
+    </script>
+
+    <style>
+        #main { margin: 0; padding: 0; }
+        #post-container { padding: 0; margin: 0; }
+        #post-main-col { padding: 0 0 15px 0; }
+        .info-col, .more-info-col { margin-bottom: 0; padding: 10px; }
+        .info-col { background-color: #1C221F; font-size: 15px; color: rgb(172, 153, 153); }
+        .more-info-col { background-color: black; color: white; }
+        #comment { padding: 0 10px; }
+        .comment-container { background-color: #f5f5f5; color: #999; padding: 15px 15px 10px 15px; margin: 0 0 10px 0; }
+        .comment-container .comment { color: #666; }
+        textarea { margin-bottom: 10px; }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li>Post</li>
+        <li class="active">{{ post.caption|truncatechars:60 }}</li>
+    </ol>
+    <div class="row" id="post-container">
+
+        <div class="col-md-9" id="post-main-col">
+            <div id="image-container">
+            {% thumbnail post.image "400" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            {% endthumbnail %}
+                <div class="caption lead">
+                    {{ post.caption }}
+                    <div class="dislike-counter">{{ post.dislike_set.count }} <span class="glyphicon glyphicon-thumbs-down"></span></div>
+                    <a href="#comment"><div class="comment-counter">{{ post.comment_set.count }} <span class="glyphicon glyphicon-comment"></span></div></a>
+                </div>
+            </div>
+            <div id="comment">
+                <form action="." method="post">{% csrf_token %}
+                    <textarea class="form-control" rows="3" name="comment" placeholder="{% if post.comment_set.all %}Leave a comment{% else %}Be the first to comment{% endif %}"></textarea>
+                    <input type="submit" class="btn btn-default" />
+                </form>
+                <div class="clearfix"></div>
+                {% for comment in post.comment_set.all %}
+                    <div class="comment-container">
+                        <div class="comment">{{ comment }}</div>
+                        Posted by {% if comment.user %}{{ comment.user }}{% else %}Anonymous{% endif %} at {{ comment.created_date }}
+                    </div>
+                    <div class="clearfix"></div>
+                {% endfor %}
+
+            </div>
+        </div>
+        <div class="lead info-col col-md-2">
+            Category: <a href="{{ post.get_category_absolute_url }}">{{ post.category.name }}</a><br/>
+            City: <a href="{{ post.get_city_absolute_url }}">{{ post.city.name }}</a><br/>
+            Area: {{ post.area.name }}<br/>
+            Location: {{ post.location_string }}<br/>
+            Uploaded By: {% if post.user %}{{ user.username }}{% else %}Anonymous{% endif %}<br/>
+            Date Uploaded: {{ post.uploaded_date }}<br/>
+        </div>
+        <div class="more-info-col col-md-1">
+            &nbsp;
+        </div>
+
+    </div>
+{% endblock %}

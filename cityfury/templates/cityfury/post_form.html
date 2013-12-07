@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load django_select2_tags %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}jquery-fileupload/css/jquery.fileupload.css">
+    {% import_django_select2_js %}
+    {% import_django_select2_css %}
+{% endblock %}
+
+{% block main %}
+
+<div id="content"><div class="form-horizontal col-md-8" role="form">
+
+    <div class="invisible alert alert-warning"></div>
+
+  <div class="form-group">
+    <label for="inputCaption" class="col-sm-2 control-label">Caption</label>
+    <div class="col-sm-10">
+        <input id="caption" class="form-control" type="text" placeholder="Enter a caption (Required)" name="caption" maxlength="200" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputCategory" class="col-sm-2 control-label">Category</label>
+    <div class="col-sm-10">
+        <input id="id_category" name="category" type="hidden" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputCity" class="col-sm-2 control-label">City</label>
+    <div class="col-sm-10">
+        <input id="id_city" name="city" type="hidden" />
+    </div>
+  </div>
+
+  <div class="form-group collapse">
+      <label for="inputArea" class="col-sm-2 control-label">Area</label>
+      <div class="col-sm-10">
+          <input id="id_area" name="area" type="hidden" />
+        </div>
+    </div>
+
+  <div class="form-group">
+    <label for="inputLocation" class="col-sm-2 control-label">Location</label>
+    <div class="col-sm-10">
+        <input id="location" class="form-control" type="text" placeholder="Enter a Location (Optional)" name="location" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputImage" class="col-sm-2 control-label"></label>
+    <div class="col-sm-10">
+        <!-- The fileinput-button span is used to style the file input field as button -->
+        <span class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-plus"></i>
+            <span>Select Image</span>
+            <!-- The file input field used as target for the file upload widget -->
+            <input id="fileupload" type="file" name="image">
+        </span>
+
+        <!-- The container for the uploaded files -->
+        <div id="files" class="files"></div>
+    </div>
+  </div>
+
+</div></div>
+
+    <!-- The global progress bar -->
+    <div id="progress" class="progress hidden">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+
+<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+<script src="{{ STATIC_URL }}jquery-fileupload/js/vendor/jquery.ui.widget.js"></script>
+<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+<script src="http://blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js"></script>
+<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<script src="http://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="{{ STATIC_URL }}jquery-fileupload/js/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="{{ STATIC_URL }}jquery-fileupload/js/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="{{ STATIC_URL }}jquery-fileupload/js/jquery.fileupload-process.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="{{ STATIC_URL }}jquery-fileupload/js/jquery.fileupload-image.js"></script>
+<!-- The File Upload audio preview plugin -->
+<script src="{{ STATIC_URL }}jquery-fileupload/js/jquery.fileupload-audio.js"></script>
+<!-- The File Upload video preview plugin -->
+<script src="{{ STATIC_URL }}jquery-fileupload/js/jquery.fileupload-video.js"></script>
+<!-- The File Upload validation plugin -->
+<script src="{{ STATIC_URL }}jquery-fileupload/js/jquery.fileupload-validate.js"></script>
+<script src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+<script>
+/*jslint unparam: true, regexp: true */
+/*global window, $ */
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$(function () {
+    'use strict';
+    // Change this to the location of your server-side upload handler:
+
+    $("#id_city").on("select2-removed", function(e) {
+        $("#id_area").select2('data', null);
+        $("#id_area").parent().parent().addClass("collapse");
+    }).on("select2-selecting", function(e) {
+        $("#id_area").parent().parent().removeClass("collapse");
+    });
+
+    $("#id_city").select2({
+        'allowClear': true,
+        'initSelection': django_select2.onInit,
+        'multiple': false,
+        'width': '400px',
+        'minimumInputLength': 2,
+        'minimumResultsForSearch': 6,
+        'closeOnSelect': false,
+        'ajax': {
+            'dataType': 'json', 
+            'quietMillis': 100,
+            'url': '/cities/data/',
+            'data': django_select2.runInContextHelper(django_select2.get_url_params, 'id_city'),
+            'results': django_select2.runInContextHelper(django_select2.process_results, 'id_city')
+        },
+        'placeholder': 'Select City (Required)'
+    });
+
+    $("#id_area").select2({
+        'allowClear': true,
+        'initSelection': django_select2.onInit,
+        'multiple': false,
+        'width': '400px',
+        'minimumInputLength': 2,
+        'minimumResultsForSearch': 6,
+        'closeOnSelect': false,
+        'ajax': {
+            'dataType': 'json', 
+            'quietMillis': 100,
+            'url': '/areas/data/',
+            'data': function(term, page) {
+                var to_return = {"term": term, "city": $('#id_city').val()};
+                return to_return;
+            },
+            'results': django_select2.runInContextHelper(django_select2.process_results, 'id_area')
+        },
+        'placeholder': 'Select Area (Optional)'
+    });
+
+
+    $("#id_category").select2({
+        'placeholder': 'Select Category (Required)',
+        'data': {{ categories_json|safe }},
+        'allowClear': true,
+        'width': '250px'
+    });
+
+    var url = '/post/',
+        csrftoken = $.cookie('csrftoken'),
+        uploadButton = $('<button/>')
+            .addClass('btn btn-primary')
+            .prop('disabled', true)
+            .text('Processing...')
+            .on('click', function () {
+                if (!$('#caption').val()) {
+                    $(".alert").removeClass("invisible").text("Please enter a caption for the picture you selected");
+                    $('#caption').focus();
+                    return false;
+                    } else {
+                    $("#caption").parent().removeClass('has-error');
+                }
+
+                if (!$('#id_city').val()) {
+                    $('#id_city').select2('open');
+                    $(".alert").removeClass("invisible").text("Please select the city where the picture was taken. Select Other if your city doesn't appear in the list.");
+                    return false;
+                }
+
+                if (!$('#id_category').val()) {
+                    $('#id_category').select2('open');
+                    $(".alert").removeClass("invisible").text("Please select a category. Select Other if the relevant category does not exist");
+                    return false;
+                }
+
+                $('#progress').removeClass('hidden');
+                var $this = $(this),
+                    data = $this.data();
+                $this
+                    .off('click')
+                    .text('Abort')
+                    .on('click', function () {
+                        $this.remove();
+                        data.abort();
+                    });
+                data.submit().always(function () {
+                    $this.remove();
+                });
+            });
+
+    $('#fileupload').fileupload({
+        url: url,
+        crossDomain: false,
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        },
+        dataType: 'json',
+        autoUpload: false,
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+        maxFileSize: 5000000, // 5 MB
+        // Enable image resizing, except for Android and Opera,
+        // which actually support image resizing, but fail to
+        // send Blob objects via XHR requests:
+        disableImageResize: /Android(?!.*Chrome)|Opera/
+            .test(window.navigator.userAgent),
+        previewMaxWidth: 150,
+        previewMaxHeight: 150,
+        previewCrop: true,
+        done: function(e, data) {
+            window.location = data.result.post_url;
+        }
+    }).bind('fileuploadsubmit', function (e, data) {
+        data.formData = {
+            caption: $('#caption').val(),
+            city: $("#id_city").val(),
+            category: $("#id_category").val()
+        };
+        if ($('#location').val()) {
+            data.formData["location_string"] = $('#location').val();
+        }
+        if ($("#id_area").val()) {
+            data.formData["area"] = $("#id_area").val();
+        }
+    }).on('fileuploadadd', function (e, data) {
+        $('#files').html('');
+        $('#progress').html('<div class="progress-bar progress-bar-success"></div>').addClass('hidden');
+        data.context = $('<div/>').appendTo('#files');
+        $.each(data.files, function (index, file) {
+            var node = $('<p/>')
+                    .append($('<span/>').text(file.name));
+            if (!index) {
+                node
+                    .append('<br>')
+                    .append(uploadButton.clone(true).data(data));
+            }
+            node.appendTo(data.context);
+        });
+    }).on('fileuploadprocessalways', function (e, data) {
+        var index = data.index,
+            file = data.files[index],
+            node = $(data.context.children()[index]);
+        if (file.preview) {
+            node
+                .prepend('<br>')
+                .prepend(file.preview);
+        }
+        if (file.error) {
+            node
+                .append('<br>')
+                .append($('<span class="text-danger"/>').text(file.error));
+        }
+        if (index + 1 === data.files.length) {
+            data.context.find('button')
+                .text('Upload')
+                .prop('disabled', !!data.files.error);
+        }
+    }).on('fileuploadprogressall', function (e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .progress-bar').css(
+            'width',
+            progress + '%'
+        );
+    }).on('fileuploaddone', function (e, data) {
+        $.each(data.result.files, function (index, file) {
+            if (file.url) {
+                var link = $('<a>')
+                    .attr('target', '_blank')
+                    .prop('href', file.url);
+                $(data.context.children()[index])
+                    .wrap(link);
+            } else if (file.error) {
+                var error = $('<span class="text-danger"/>').text(file.error);
+                $(data.context.children()[index])
+                    .append('<br>')
+                    .append(error);
+            }
+        });
+    }).on('fileuploadfail', function (e, data) {
+        $.each(data.files, function (index, file) {
+            var error = $('<span class="text-danger"/>').text('File upload failed.');
+            $(data.context.children()[index])
+                .append('<br>')
+                .append(error);
+        });
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+});
+</script>
+
+{% endblock %}

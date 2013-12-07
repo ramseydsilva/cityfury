@@ -6,33 +6,130 @@
         <link rel="shortcut icon" type="image/x-icon" href="/static/cityfury/img/favicon.ico">
 
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.0.1-p7/css/bootstrap.min.css">
 
         <!-- Optional theme -->
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.0.1-p7/css/bootstrap-theme.min.css">
 
         <!-- Latest compiled and minified JavaScript -->
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.0.1-p7/js/bootstrap.min.js"></script>
 
         <link rel="stylesheet" href="/static/cityfury/css/site.css">
+
+        {% if posts %}
+        <script src="{{ STATIC_URL }}cityfury/js/packery.pkgd.min.js"></script>
+        <script src="{{ STATIC_URL }}cityfury/js/jquery-ui-1.10.3.custom.js"></script>
+        <script>
+            $(function () {
+                var container = document.querySelector('#packery');
+                var pckry = new Packery(container, {
+                    itemSelector: '.item',
+                    gutter: 10
+                });
+                $('#packery .item').draggable();
+                pckry.bindUIDraggableEvents($('#packery .item'));
+                pckry.bindResize();
+
+                // On minimizing/maximizing left navs rearrange items
+                $('.minimize-control').click(function() {
+                    setTimeout(function() {
+                        pckry.layout();
+                    }, 500);
+                });
+
+            });
+        </script>
+        {% endif %}
+        <script>
+            function size_active_list() {
+                var active_list_items = $('.minimized li.active');
+                active_list_items.each(function(active_list) {
+                    active_list = $(active_list_items[active_list]);
+                    var extra_padding = 15;
+                    if (active_list.parent().parent().is('#second-nav')) {
+                        extra_padding = 25;
+                    }
+                    active_list.css('margin-top', extra_padding + Math.pow(active_list.text().length, 2));
+                });
+            }
+            $(function () {
+
+                $(".full-height").css("height", $("#main").height());
+
+                size_active_list();
+                 $('.minimized .minimize-control').live('click', function() {
+                    $(this).parent().removeClass('minimized').addClass('maximized');
+                    var active_list = $(this).parent().find('li.active');
+                    active_list.css('margin-top', 0);
+                });
+                $('.maximized .minimize-control').live('click', function() {
+                    $(this).parent().removeClass('maximized').addClass('minimized');
+                    size_active_list();
+                });
+            });
+        </script>
+
+        {% block extra_head %}{% endblock %}
     </head>
     <body>
-        {% block main %}
-            <h1>Angry Citizens Unite!</h1>
-            <hr/>
-            <br/><br/>
-            <p class="lead">
-            Because things like this has to stop...
-            <br/><img width="400" src="http://theviewspaper.net/wp-content/uploadsnew/garbage-in-india.jpg" /><br/><br/>
-            And this...
-            <br/><img width="300" src="http://www.chaaps.com/wp-content/uploads/2010/08/road.jpg" /><br/><br/>
-            And much more that I am gonna have to build an entire website to document it all<br/><br/>
-            <img width="200" src="http://i0.kym-cdn.com/entries/icons/original/000/004/006/y-u-no-guy.jpg" /><br/><br/>
-            Do check back soon<br/><br/>
-            In the meantime <a href="https://www.facebook.com/cityfury" target="blank"><img id="like_image" width="40" src="/static/cityfury/img/facebook_like.png" /></a> us on facebook<br/><br/>
-            <hr/>
-            </p>
-        {% endblock %}
+        <header class="">
+            <div class="logo-col">
+                <a href="/" id="logo" class="lead">CityFury</a>
+            </div>
+            <div class="tagline-col">
+                <p class="lead">Angry Citizens Unite!
+                    <a id="uploadAPic" class="btn btn-success" href="/post/">Upload A Pic</a>
+                </p>
+            </div>
+        </header>
+            <div id="main-container">
+                <div class="full-height {% if open_category_nav %}maximized{% else %}minimized{% endif %}" id="first-nav">
+                        <a class="minimize-control glyphicon glyphicon-align-justify"></a>
+                        <h3 class="lead"><span class="nav-title">Categories</span></h3>
+                        <ul>
+                            <li {% if category.name == "All" %}class="active"{% endif %}><a href="/">All</a></li>
+                            {% for c in categories %}
+                                {% if city.name %}
+                                    <li {% if category == c %}class="active"{% endif %}><a href="{% url "category" c.name|lower %}">{{ c.name }}</a></li>
+                            {% else %}
+                                <li {% if category == c %}class="active"{% endif %}><a href="{% url "city" category.name|lower c.name|lower %}">{{ c.name }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="full-height {% if open_city_nav %}maximized{% else %}minimized{% endif %}" id="second-nav">
+                    {% block left_nav %}
+                        <a class="minimize-control glyphicon glyphicon-align-justify"></a>
+                        <h3 class="lead"><span class="nav-title">Cities</span></h3>
+                        <ul>
+                            <li class="{% if city.name|lower == "all" %}active{% endif %}"><a href="{% url "category" category.name|lower %}">All</a></li>
+                            {% for c in cities %}
+                                <li class="{% if c == city %}active{% endif %}"><a href="{% url "city" category.name|lower c.name|lower %}">{{ c.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% endblock %}
+                </div>
+
+                <div id="main">
+                    {% block main %}
+
+                    <ol class="breadcrumb">
+                        <li><a href="/">Home</a></li>
+                        {% if not city %}
+                            <li class="active">{{ category.name }}</li>
+                        {% else %}
+                            <li>{{ category.name }}</li>
+                            <li class="active">{{ city.name }}</li>
+                        {% endif %}
+                    </ol>
+                    {% include "cityfury/includes/packery_posts.html" %}
+
+                    {% endblock %}
+                </div>
+            </div>
         <footer>
             &copy; CityFury 2013
         </footer>

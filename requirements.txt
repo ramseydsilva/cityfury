@@ -4,3 +4,4 @@ distribute==0.6.24
 gunicorn==18.0
 wsgiref==0.1.2
 yolk==0.4.3
+pillow

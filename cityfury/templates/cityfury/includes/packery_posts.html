@@ -1,0 +1,22 @@
+{% load thumbnail %}
+
+<div id="packery">
+    {% for post in posts %}
+            <a href="{{ post.get_absolute_url }}">
+        <div class="item">
+                {% thumbnail post.image "300" quality=50 as im %}
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+
+                <div class="caption lead">
+                    {{ post.caption }}
+                    <div class="dislike-counter">{{ post.dislike_set.count }} <span class="glyphicon glyphicon-thumbs-down"></span></div>
+                    <div class="comment-counter">{{ post.comment_set.count }} <span class="glyphicon glyphicon-comment"></span></div>
+                </div>
+        </div>
+
+            </a>
+    {% endfor %}
+</div>
+
+
