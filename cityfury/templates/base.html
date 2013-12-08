@@ -63,6 +63,14 @@
 
                 $(".full-height").css("height", $("#main").height());
 
+                $(".flag-button").live("click", function() {
+                    var remote = $(this).attr("rel");
+                    $("#iframe-modal .modal-title").text("Flag Post");
+                    $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;height:300px;width:530px" height="400px" width="550px" frameborder="0" />')
+                    .attr("src", remote));
+                    $('#iframe-modal').modal();
+                });
+
                 $(".dislike-button").live("click", function() {
                     var post_id = $(this).attr("rel");
                     var dislike_counter = $(".dislike-counter[rel='" + post_id + "']")
@@ -80,9 +88,9 @@
                                     dislike_counter.removeClass("disliked");
                                 }
                             } else {
-                                var remote = "{% url 'login' %}?modal=true";
+                                var remote = "{% url 'login' %}?modal=true&close=true";
                                 $("#iframe-modal .modal-title").text("Login to DisLike Post");
-                                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;height:300px;width:450px" height="400px" width="550px" frameborder="0" />')
+                                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;height:300px;width:530px" height="400px" width="550px" frameborder="0" />')
                                 .attr("src", remote));
                                 $('#iframe-modal').modal();
                             }

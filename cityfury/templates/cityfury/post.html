@@ -70,10 +70,7 @@
             Area: {{ post.area.name }}<br/>
             Location: {{ post.location_string }}<br/>
             Posted by {% if post.user %}{{ user.username }}{% else %}Anonymous{% endif %} on {{ post.uploaded_date }}<br/>
-            {% if user not in post.dislikes.all %}
-                <a href="#" class="dislike-button" rel="{{ post.id }}">DisLike this post!</a><br/>
-            {% endif %}
-            <a href="#comment">Leave a comment</a>
+            <span class="flag-button" rel="{% url "flag-post" post.id %}">Flag post <span class="glyphicon glyphicon-bullhorn"></span><br/>
         </div>
     </div>
 {% endblock %}

@@ -11,9 +11,10 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.models import User
 
 
-def SuccessfulSignInRedirect(next, modal, request):
-    if modal == "true":
-        return render_to_response("cityfury/includes/modal_close.html", {}, context_instance = RequestContext(request))
+def SuccessfulSignInRedirect(next, modal, request, close=False):
+    modal_redirect_template = request.session.get("modal_redirect_template", "cityfury/includes/modal_close.html")
+    if close and modal == "true":
+        return render_to_response(modal_redirect_template, {}, context_instance = RequestContext(request))
     return HttpResponseRedirect(next)
 
 def logout_view(request):
@@ -25,6 +26,7 @@ def logout_view(request):
 
 def login_view(request, message='', username="", password="", template='cityfury/user/login.html', modal=False):
     modal = request.REQUEST.get("modal", False)
+    close = request.REQUEST.get("close", False)
     if modal == "true":
         template = 'cityfury/user/login_modal.html'
 
@@ -46,16 +48,17 @@ def login_view(request, message='', username="", password="", template='cityfury
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return SuccessfulSignInRedirect(next, modal, request)
+                return SuccessfulSignInRedirect(next, modal, request, close=close)
 
         message = "Error logging you in, are you sure you're using the right credentials?"
 
-    context ={'message' : message, 'next' : next, 'username': username, 'password': password, 'modal': modal }
+    context ={'message' : message, 'next' : next, 'username': username, 'password': password, 'modal': modal, 'close': close }
     return render_to_response(template, context, context_instance = RequestContext(request))
 
 
 def register_view(request, message='', username='', password='', email='', template='cityfury/user/register.html', modal=False):
     modal = request.REQUEST.get("modal", False)
+    close = request.REQUEST.get("close", False)
     if modal == "true":
         template = 'cityfury/user/register_modal.html'
 
@@ -90,15 +93,15 @@ def register_view(request, message='', username='', password='', email='', templ
             user = User.objects.create_user(username, email, password)
             user = authenticate(username=username, password=password)
             login(request, user)
-            return SuccessfulSignInRedirect(next, modal, request)
+            return SuccessfulSignInRedirect(next, modal, request, close=close)
 
-    context = {'next': next, 'message': message, 'username': username, 'password': password, 'email': email, 'modal': modal }
+    context = {'next': next, 'message': message, 'username': username, 'password': password, 'email': email, 'modal': modal, 'close': close}
     return render_to_response(template, context, context_instance = RequestContext(request))
 
 def get_login_buttons(request):
     next = request.REQUEST.get('next', reverse('home'))
     t = get_template('cityfury/includes/login_buttons.html')
     to_return = {
-        "html": t.render(Context({'next': next, 'request': request }))
+        "html": t.render(Context({'next': next, 'user': request.user }))
     }
     return HttpResponse(json.dumps(to_return), mimetype='application/json')

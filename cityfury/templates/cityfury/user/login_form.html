@@ -22,6 +22,9 @@
             <div class="col-sm-offset-2 col-sm-10">
                 <input type="hidden" name="next" value="{{ next }}" />
                 <input type="hidden" name="modal" value="{{ modal }}" />
+                {% if close %}
+                    <input type="hidden" name="close" value="{{ close }}" />
+                {% endif %}
                 <button type="submit" class="btn btn-default">Sign in</button>
                 <a href="{% url "register" %}?modal={{ modal }}&next={{ next }}">or Register</a>
             </div>

@@ -3,5 +3,5 @@
     <a class="user-auth-links login" href="{% url "login" %}?next={% if next %}{{ next }}{% else %}{{ request.path }}{% endif %}">Login</a>
 {% else %}
     <a class="user-auth-links logout" href="{% url "logout" %}?next={% if next %}{{ next }}{% else %}{{ request.path }}{% endif %}">Logout</a>
-    <span class="user-auth-links greeting">Welcome {{ request.user.username }}</span>
+    <span class="user-auth-links greeting">Welcome {{ user.username }}</span>
 {% endif %}

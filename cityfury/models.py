@@ -81,6 +81,15 @@ class DisLike(models.Model):
     def __unicode__(self):
         return self.user.username + " - " + self.post.caption
 
+class PostFlag(models.Model):
+    user = models.ForeignKey(User)
+    post = models.ForeignKey("Post")
+    created_date = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField()
+
+    def __unicode__(self):
+        return "%s - %s" %(self.user.username, self.post.caption)
+
 class Post(models.Model):
     caption = models.CharField(max_length=500)
     description = models.TextField()
@@ -93,6 +102,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     dislikes = models.ManyToManyField(User, through="Dislike", related_name="disliked_posts")
+    flags = models.ManyToManyField(User, through="PostFlag", related_name="flagged_posts")
     uploaded_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:

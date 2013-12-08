@@ -37,8 +37,8 @@ def post(request, error=False, message=""):
         description = request.POST["description"]
         category = request.POST["category"]
         city = request.POST["city"]
-        area = request.POST["area"]
-        location = request.POST["location"]
+        area = request.POST.get("area", None)
+        location = request.POST.get("location", "")
         image = request.FILES["image"]
 
         if caption == "":
@@ -58,7 +58,7 @@ def post(request, error=False, message=""):
                 city_created = False
             except:
                 try:
-                    city = City.objects.get(name=city)
+                    city = City.objects.get(name__iexact=city)
                 except:
                     city = City(name=city.capitalize())
                     city.save()
@@ -70,7 +70,7 @@ def post(request, error=False, message=""):
             except:
                 if not area.isdigit():
                     try:
-                        area = Area.objects.get(name=area, city=city)
+                        area = Area.objects.get(name__iexact=area, city=city)
                     except:
                         area = Area(name=area.capitalize(), city=city)
                         area.save()

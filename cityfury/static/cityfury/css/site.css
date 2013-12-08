@@ -247,6 +247,15 @@ footer {
 #packery a:hover { color: #E4EBB5; }
 #packery .item .dislike-counter, #packery .item .comment-counter { font-size: 14px;  }
 
+.flag-button {
+    color: rgb(255, 84, 84);
+    cursor: pointer;
+}
+
+.flag-button:hover {
+    color: red;
+}
+
 .alert {
     padding: 10px 15px;
 }

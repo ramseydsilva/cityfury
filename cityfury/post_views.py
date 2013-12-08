@@ -70,3 +70,22 @@ def dislike(request, next=None, success=False, action=None):
         'dislikes': post.dislike_set.count()
     }
     return HttpResponse(json.dumps(to_return), mimetype='application/json')
+
+def flag(request, post_id, success=False, template="cityfury/post/flag.html"):
+
+    post = get_object_or_404(Post, id=post_id)
+    if request.user.is_anonymous():
+        return redirect(reverse("login") + "?modal=true&next=" + reverse("flag-post", args=[post.id]))
+
+    if request.POST:
+        comment = request.POST.get("comment", "")
+        flag = PostFlag(comment=comment, user=request.user, post=post)
+        flag.save()
+        success = True
+
+    context = {
+        'post': post,
+        'success': success
+    }
+
+    return render_to_response(template, context, context_instance = RequestContext(request))

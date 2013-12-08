@@ -1,0 +1,13 @@
+{% extends "cityfury/includes/modal.html" %}
+
+{% block main %}
+    {% if success %}
+    <div class="alert alert-success"><strong>Thanks for your feedback!</strong> This post has been flagged and the admins will look into it as soon as possible.</div>
+    {% else %}
+    <form class="" action="." method="post">{% csrf_token %}
+        <textarea class="form-control" rows="3" name="comment" placeholder="Enter a comment (optional)"></textarea><br/>
+        <input type="hidden" name="post" value="{{ post.id }}" />
+        <input type="submit" class="btn btn-default" />
+    </form>
+    {% endif %}
+{% endblock %}
