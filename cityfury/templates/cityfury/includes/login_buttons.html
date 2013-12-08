@@ -1,0 +1,7 @@
+{% if user.is_anonymous %}
+    <a class="user-auth-links register" href="{% url "register" %}?next={% if next %}{{ next }}{% else %}{{ request.path }}{% endif %}">Register</a>
+    <a class="user-auth-links login" href="{% url "login" %}?next={% if next %}{{ next }}{% else %}{{ request.path }}{% endif %}">Login</a>
+{% else %}
+    <a class="user-auth-links logout" href="{% url "logout" %}?next={% if next %}{{ next }}{% else %}{{ request.path }}{% endif %}">Logout</a>
+    <span class="user-auth-links greeting">Welcome {{ request.user.username }}</span>
+{% endif %}

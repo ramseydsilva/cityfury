@@ -234,10 +234,11 @@ footer {
 #post-container .caption { color: #F0F0F0; }
 .caption { float: left; width: 100%; position: absolute; bottom: 0; background-color: rgba(0,0,0,0.4);
             padding: 10px 2%; text-align: left; margin: 0; font-size: 17px; }
-.caption span { width: 93%; display: block; }
+.caption span.caption-text { width: 93%; display: block; }
 .dislike-counter, .comment-counter { cursor: pointer; position: absolute; bottom: 10px; font-size: 16px; }
 #post-container .dislike-counter, #post-container .comment-counter { color: rgb(62, 194, 212); }
 #post-container .dislike-counter:hover, #post-container .comment-counter:hover { color: rgb(67, 131, 201); }
+#post-container .dislike-counter.disliked { color: rgb(177, 177, 112); }
 .dislike-counter { right: 53px; }
 .comment-counter { right: 12px; }
 
@@ -248,4 +249,19 @@ footer {
 
 .alert {
     padding: 10px 15px;
+}
+
+.other-input {
+    float: left;
+    width: 200px;
+    margin: 0 0 0 10px;
+}
+.select2-container {
+    float: left;
+}
+.select2-container a.select2-choice {
+    height: 33px;
+}
+.select2-container span.select2-chosen {
+    padding-top: 3px;
 }

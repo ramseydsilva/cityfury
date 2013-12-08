@@ -63,15 +63,67 @@
 
                 $(".full-height").css("height", $("#main").height());
 
-                size_active_list();
-                 $('.minimized .minimize-control').live('click', function() {
-                    $(this).parent().removeClass('minimized').addClass('maximized');
-                    var active_list = $(this).parent().find('li.active');
-                    active_list.css('margin-top', 0);
+                $(".dislike-button").live("click", function() {
+                    var post_id = $(this).attr("rel");
+                    var dislike_counter = $(".dislike-counter[rel='" + post_id + "']")
+                    $.ajax({
+                        url: "{% url "dislike" %}?post=" + post_id,
+                        success: function(data, status) {
+                            if (data.success) {
+                                dislike_counter.find(".dislikes").text(data.dislikes);
+                                if (data.action == "disliked")
+                                {
+                                    dislike_counter.addClass("disliked");
+                                }
+                                if (data.action == "undisliked")
+                                {
+                                    dislike_counter.removeClass("disliked");
+                                }
+                            } else {
+                                var remote = "{% url 'login' %}?modal=true";
+                                $("#iframe-modal .modal-title").text("Login to DisLike Post");
+                                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;height:300px;width:450px" height="400px" width="550px" frameborder="0" />')
+                                .attr("src", remote));
+                                $('#iframe-modal').modal();
+                            }
+                        }
+                    });
                 });
-                $('.maximized .minimize-control').live('click', function() {
-                    $(this).parent().removeClass('maximized').addClass('minimized');
+
+                function closeModal() {
+                    $('#iframe-modal').modal('hide');
+                }
+                window.closeModal = closeModal;
+
+                function getLoginButtons() {
+                    $.ajax({
+                        url: "{% url 'get_login_buttons' %}?next={{ request.path }}",
+                        success: function(data, status) {
+                            $("#login_buttons").html(data.html);
+                        }
+                    });
+                }
+                window.getLoginButtons = getLoginButtons;
+
+                function maximizeNav(el) {
+                    el.parent().removeClass('minimized').addClass('maximized');
+                    el.removeClass('glyphicon-align-justify').addClass('glyphicon-align-left');
+                    var active_list = el.parent().find('li.active');
+                    active_list.css('margin-top', 0);
+                }
+
+                function minimizeNav(el) {
+                    el.parent().removeClass('maximized').addClass('minimized');
+                    el.removeClass('glyphicon-align-left').addClass('glyphicon-align-justify');
                     size_active_list();
+                }
+
+                size_active_list();
+                $('.maximized .minimize-control').live('click', function(el) {minimizeNav($(el.currentTarget))});
+                $('.minimized').live('click', function(e) {
+                    e.preventDefault();
+                    maximizeNav($(e.currentTarget).find(".minimize-control"));
+                    return false;
                 });
             });
         </script>
@@ -86,31 +138,35 @@
             <div class="tagline-col">
                 <p class="lead">Angry Citizens Unite!
                     <a id="uploadAPic" class="btn btn-success" href="/post/">Upload A Pic</a>
-                    {% if user.is_anonymous %}
-                        <a class="user-auth-links register" href="{% url "register" %}?next={{ request.path }}">Register</a>
-                        <a class="user-auth-links login" href="{% url "login" %}?next={{ request.path }}">Login</a>
-                    {% else %}
-                        <a class="user-auth-links logout" href="{% url "logout" %}?next={{ request.path }}">Logout</a>
-                        <span class="user-auth-links greeting">Welcome {{ request.user.username }}</span>
-                    {% endif %}
+                    <span id="login_buttons">
+                        {% include "cityfury/includes/login_buttons.html" %}
+                    </span>
                 </p>
             </div>
         </header>
             <div id="main-container">
                 <div class="full-height {% if open_category_nav %}maximized{% else %}minimized{% endif %}" id="first-nav">
-                    <a class="minimize-control glyphicon glyphicon-align-justify"></a>
+                    <a class="minimize-control glyphicon glyphicon-align-{% if open_category_nav %}left{% else %}justify{% endif %}"></a>
                     <h3 class="lead"><span class="nav-title">Categories</span></h3>
                     <ul>
-                        <li {% if category.name == "All" %}class="active"{% endif %}><a href="/">All</a></li>
+                        {% if city and city.name != "All" %}
+                            <li {% if category.name == "All" %}class="active"{% endif %}><a href="{% url "city" "all" city.name|lower %}">All</a></li>
+                        {% else %}
+                            <li {% if category.name == "All" %}class="active"{% endif %}><a href="/">All</a></li>
+                        {% endif %}
                         {% for c in categories %}
-                            <li {% if category == c %}class="active"{% endif %}><a href="{% url "category" c.name|lower %}">{{ c.name }}</a></li>
+                            {% if city %}
+                                <li {% if category == c %}class="active"{% endif %}><a href="{% url "city" c.name|lower city.name|lower %}">{{ c.name }}</a></li>
+                            {% else %}
+                                <li {% if category == c %}class="active"{% endif %}><a href="{% url "category" c.name|lower %}">{{ c.name }}</a></li>
+                            {% endif %}
                         {% endfor %}
                     </ul>
                 </div>
 
                 <div class="full-height {% if open_city_nav %}maximized{% else %}minimized{% endif %}" id="second-nav">
                     {% block left_nav %}
-                        <a class="minimize-control glyphicon glyphicon-align-justify"></a>
+                        <a class="minimize-control glyphicon glyphicon-align-{% if open_city_nav %}left{% else %}justify{% endif %}"></a>
                         <h3 class="lead"><span class="nav-title">Cities</span></h3>
                         <ul>
                             <li class="{% if city.name|lower == "all" %}active{% endif %}"><a href="{% if category %}{% url "category" category.name|lower %}{% else %}/{% endif %}">All</a></li>
@@ -160,6 +216,22 @@
         <footer>
             &copy; CityFury 2013
         </footer>
+
+<div class="modal fade" id="iframe-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

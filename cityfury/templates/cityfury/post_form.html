@@ -12,7 +12,9 @@
 
 <div id="content"><div class="form-horizontal col-md-8" role="form">
 
-    <div class="invisible alert alert-warning"></div>
+{% if message %}
+    <div class="alert alert-warning">{{ message }}</div>
+{% endif %}
 
   <div class="form-group">
     <label for="inputCaption" class="col-sm-2 control-label">Caption</label>
@@ -25,6 +27,7 @@
     <label for="inputCategory" class="col-sm-2 control-label">Category</label>
     <div class="col-sm-10">
         <input id="id_category" name="category" type="hidden" />
+        <input id="id_category_other" name="category_other" type="text" class="collapse form-control other-input" placeholder="Enter Other Category" />
     </div>
   </div>
 
@@ -45,7 +48,14 @@
   <div class="form-group">
     <label for="inputLocation" class="col-sm-2 control-label">Location</label>
     <div class="col-sm-10">
-        <input id="location" class="form-control" type="text" placeholder="Enter a Location (Optional)" name="location" />
+        <input id="location" class="form-control" type="text" placeholder="Enter a specfic Location (Optional)" name="location" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputDescription" class="col-sm-2 control-label">Description</label>
+    <div class="col-sm-10">
+        <textarea id="description" class="form-control" rows="4" placeholder="Enter a Description (Optional)" name="description"></textarea>
     </div>
   </div>
 
@@ -115,28 +125,42 @@ $(function () {
     });
 
     $("#id_city").select2({
-        'allowClear': true,
-        'initSelection': django_select2.onInit,
-        'multiple': false,
-        'width': '400px',
-        'minimumInputLength': 2,
-        'minimumResultsForSearch': 6,
-        'closeOnSelect': false,
-        'ajax': {
+        allowClear: true,
+        //Allow manually entered text in drop down.
+        createSearchChoice:function(term, data) {
+         if ( $(data).filter( function() {
+           return this.text.localeCompare(term)===0;
+         }).length===0) {
+           return {id:term, text:term};
+         }
+        },
+        multiple: false,
+        width: '250px',
+        minimumInputLength: 2,
+        minimumResultsForSearch: 6,
+        closeOnSelect: false,
+        ajax: {
             'dataType': 'json', 
             'quietMillis': 100,
             'url': '/cities/data/',
             'data': django_select2.runInContextHelper(django_select2.get_url_params, 'id_city'),
             'results': django_select2.runInContextHelper(django_select2.process_results, 'id_city')
         },
-        'placeholder': 'Select City (Required)'
+        placeholder: 'Select City (Required)'
     });
 
     $("#id_area").select2({
         'allowClear': true,
-        'initSelection': django_select2.onInit,
+        //Allow manually entered text in drop down.
+        createSearchChoice:function(term, data) {
+         if ( $(data).filter( function() {
+           return this.text.localeCompare(term)===0;
+         }).length===0) {
+           return {id:term, text:term};
+         }
+        },
         'multiple': false,
-        'width': '400px',
+        'width': '250px',
         'minimumInputLength': 2,
         'minimumResultsForSearch': 6,
         'closeOnSelect': false,
@@ -230,11 +254,10 @@ $(function () {
         data.formData = {
             caption: $('#caption').val(),
             city: $("#id_city").val(),
-            category: $("#id_category").val()
+            category: $("#id_category").val(),
+            description: $("#description").val()
         };
-        if ($('#location').val()) {
-            data.formData["location_string"] = $('#location').val();
-        }
+        data.formData["location_string"] = $('#location').val();
         if ($("#id_area").val()) {
             data.formData["area"] = $("#id_area").val();
         }

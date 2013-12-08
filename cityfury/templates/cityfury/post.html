@@ -5,7 +5,7 @@
     {{ block.super }}
     <script>
         $(function () {
-            $(".info-col, .more-info-col").css("height", $("#main").height() - $('#main .breadcrumb').outerHeight());
+            $(".info-col").css("height", $("#main").height() - $('#main .breadcrumb').outerHeight());
             $(".comment-counter").click(function() {
                 $("textarea").focus();
             });
@@ -16,11 +16,11 @@
         #main { margin: 0; padding: 0; }
         #post-container { padding: 0; margin: 0; }
         #post-main-col { padding: 0 0 15px 0; }
-        .info-col, .more-info-col { margin-bottom: 0; padding: 10px; }
+        .info-col { margin-bottom: 0; padding: 10px 20px 10px 10px; }
         .info-col { background-color: #1C221F; font-size: 15px; color: rgb(172, 153, 153); }
-        .more-info-col { background-color: black; color: white; }
         #comment { padding: 0 10px; }
-        .comment-container { background-color: #f5f5f5; color: #999; padding: 15px 15px 10px 15px; margin: 0 0 10px 0; }
+        #description, .comment-container { background-color: #f5f5f5; color: #999; padding: 15px 15px 10px 15px; margin: 0 0 10px 0; }
+        #description { margin: -10px 0 10px 0; color: #47430E; font-size: 16px; }
         .comment-container .comment { color: #666; }
         textarea { margin-bottom: 10px; }
     </style>
@@ -34,17 +34,20 @@
     </ol>
     <div class="row" id="post-container">
 
-        <div class="col-md-9" id="post-main-col">
+        <div class="col-sm-9" id="post-main-col">
             <div id="image-container">
             {% thumbnail post.image "400" as im %}
                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
             {% endthumbnail %}
                 <div class="caption lead">
-                    <span>{{ post.caption }}</span>
-                    <div class="dislike-counter">{{ post.dislike_set.count }} <span class="glyphicon glyphicon-thumbs-down"></span></div>
+                    <span class="caption-text">{{ post.caption }}</span>
+                    <div class="dislike-button dislike-counter {% if user in post.dislikes.all %}disliked{% endif %}" rel="{{ post.id }}">
+                        <span class="dislikes">{{ post.dislike_set.count }}</span> <span class="glyphicon glyphicon-thumbs-down"></span>
+                    </div>
                     <a href="#comment"><div class="comment-counter">{{ post.comment_set.count }} <span class="glyphicon glyphicon-comment"></span></div></a>
                 </div>
             </div>
+            {% if post.description %}<div id="description" class="lead">{{ post.description }}</div>{% endif %}
             <div id="comment">
                 <form action="." method="post">{% csrf_token %}
                     <textarea class="form-control" rows="3" name="comment" placeholder="{% if post.comment_set.all %}Leave a comment{% else %}Be the first to comment{% endif %}"></textarea>
@@ -61,16 +64,16 @@
 
             </div>
         </div>
-        <div class="lead info-col col-md-2">
+        <div class="lead info-col col-sm-3">
             Category: <a href="{{ post.get_city_absolute_url }}">{{ post.category.name }}</a><br/>
             City: <a href="{{ post.get_city_absolute_url }}">{{ post.city.name }}</a><br/>
             Area: {{ post.area.name }}<br/>
             Location: {{ post.location_string }}<br/>
             Posted by {% if post.user %}{{ user.username }}{% else %}Anonymous{% endif %} on {{ post.uploaded_date }}<br/>
+            {% if user not in post.dislikes.all %}
+                <a href="#" class="dislike-button" rel="{{ post.id }}">DisLike this post!</a><br/>
+            {% endif %}
+            <a href="#comment">Leave a comment</a>
         </div>
-        <div class="more-info-col col-md-1">
-            &nbsp;
-        </div>
-
     </div>
 {% endblock %}

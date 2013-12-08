@@ -7,7 +7,7 @@
         {% endthumbnail %}
 
         <div class="caption lead">
-            {{ post.caption }}
+            <span class="caption-text">{{ post.caption }}</span>
             <div class="dislike-counter">{{ post.dislike_set.count }} <span class="glyphicon glyphicon-thumbs-down"></span></div>
             <div class="comment-counter">{{ post.comment_set.count }} <span class="glyphicon glyphicon-comment"></span></div>
         </div>

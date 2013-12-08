@@ -32,5 +32,3 @@ def serialize(instance, file_attr='file'):
         'thumbnailUrl': obj.url,
         'size': obj.size
     }
-
-

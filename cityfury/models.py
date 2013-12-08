@@ -12,7 +12,8 @@ class Country(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=50)
-    country = models.ForeignKey(Country)
+    country = models.ForeignKey(Country, null=True, blank=True)
+    publish = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
@@ -23,6 +24,7 @@ class City(models.Model):
 class Area(models.Model):
     name = models.CharField(max_length=50)
     city = models.ForeignKey(City)
+    publish = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
@@ -73,11 +75,15 @@ class DisLike(models.Model):
     post = models.ForeignKey("Post")
     created_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = (('user', 'post'),)
+
     def __unicode__(self):
         return self.user.username + " - " + self.post.caption
 
 class Post(models.Model):
     caption = models.CharField(max_length=500)
+    description = models.TextField()
     image = ImageField(upload_to=upload_to)
     location_string = models.CharField(max_length=500, null=True, blank=True)
     location = models.ForeignKey(Location, null=True, blank=True)
@@ -86,6 +92,7 @@ class Post(models.Model):
     category = models.ForeignKey(Category, null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
+    dislikes = models.ManyToManyField(User, through="Dislike", related_name="disliked_posts")
     uploaded_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:

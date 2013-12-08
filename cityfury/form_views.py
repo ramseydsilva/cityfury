@@ -19,7 +19,10 @@ def cities_data(request):
 def areas_data(request):
     areas = Area.objects.filter(name__icontains=request.GET['term'])
     if request.GET['city']:
-        areas = areas.filter(city__id=request.GET['city'])
+        try:
+            areas = areas.filter(city__id=request.GET['city'])
+        except:
+            pass
 
     to_return = {'results': [], 'err': 'nil'}
     for area in areas:
@@ -27,27 +30,76 @@ def areas_data(request):
     return HttpResponse(json.dumps(to_return), mimetype='application/json')
 
 
-class PostCreateView(CreateView):
-    form_class = PostForm
-    template_name = "cityfury/post_form.html"
+def post(request, error=False, message=""):
 
-    def form_valid(self, form):
-        post = form.save()
-        if not self.request.user.is_anonymous():
-            post.user = self.request.user
+    if request.POST:
+        caption = request.POST["caption"]
+        description = request.POST["description"]
+        category = request.POST["category"]
+        city = request.POST["city"]
+        area = request.POST["area"]
+        location = request.POST["location"]
+        image = request.FILES["image"]
+
+        if caption == "":
+            error = True
+            message = "Please enter a caption"
+        if category == "":
+            error = True
+            message = "Please enter a category"
+        else:
+            category = Category.objects.get(id=category)
+        if city == "":
+            error = True
+            message = "Please enter a city"
+        else:
+            try:
+                city = City.objects.get(id=city)
+                city_created = False
+            except:
+                try:
+                    city = City.objects.get(name=city)
+                except:
+                    city = City(name=city.capitalize())
+                    city.save()
+                    city_created = True
+
+        if area != "":
+            try:
+                area = Area.objects.get(id=area, city=city)
+            except:
+                if not area.isdigit():
+                    try:
+                        area = Area.objects.get(name=area, city=city)
+                    except:
+                        area = Area(name=area.capitalize(), city=city)
+                        area.save()
+
+        if not image:
+            error = True
+            message = "Please select an image"
+
+        if not error:
+            post = Post(caption=caption, description=description, category=category, city=city, area=area, location_string=location, image=image)
             post.save()
-        files = [serialize(post, file_attr="image")]
-        data = {'files': files, 'post_url': post.get_absolute_url() }
-        response = JSONResponse(data, mimetype=response_mimetype(self.request))
-        response['Content-Disposition'] = 'inline; filename=files.json'
-        return response
+            if not request.user.is_anonymous():
+                post.user = request.user
+                post.save()
+            files = [serialize(post, file_attr="image")]
+            data = {'files': files, 'post_url': post.get_absolute_url() }
+            response = JSONResponse(data, mimetype=response_mimetype(request))
+            response['Content-Disposition'] = 'inline; filename=files.json'
+            return response
 
-    def get_context_data(self, **kwargs):
-        context = super(PostCreateView, self).get_context_data(**kwargs)
-        context['cities'] = City.objects.all()
-        categories = Category.objects.all()
-        categories_json = []
-        for category in categories:
-            categories_json.append({'id': category.id, 'text': category.name})
-        context['categories_json'] = json.dumps(categories_json)
-        return context
+    categories_json = []
+    for category in Category.objects.all():
+        categories_json.append({'id': category.id, 'text': category.name})
+
+    context = {
+        'cities': City.objects.all(),
+        'categories': Category.objects.all(),
+        'categories_json': json.dumps(categories_json),
+        'message': message
+    }
+
+    return render_to_response("cityfury/post_form.html", context, context_instance = RequestContext(request))

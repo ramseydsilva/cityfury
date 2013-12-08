@@ -11,7 +11,6 @@ def home(request):
 
     posts = Post.objects.all()
     paginator = Paginator(posts, 50)
-
     page = request.GET.get('page')
     try:
         posts = paginator.page(page)
@@ -36,7 +35,16 @@ def category(request, category):
         return redirect("/")
 
     category = get_object_or_404(Category, name__iexact=category)
+
     posts = Post.objects.filter(category=category)
+    paginator = Paginator(posts, 50)
+    page = request.GET.get('page')
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
 
     city = {'name': 'All'}
 
@@ -51,7 +59,7 @@ def category(request, category):
 
 def city(request, category, city):
     if city == "all":
-        return reverse("category", args=[category])
+        return redirect(reverse("category", args=[category]))
 
     city = get_object_or_404(City, name__iexact=city)
     posts = city.post_set.all()
@@ -61,6 +69,15 @@ def city(request, category, city):
     else:
         category = get_object_or_404(Category, name__iexact=category)
         posts = posts.filter(category=category)
+
+    paginator = Paginator(posts, 50)
+    page = request.GET.get('page')
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
 
     context = {
         'city': city,
@@ -88,3 +105,4 @@ def post(request, post_id):
         'category': post.category
     }
     return render_to_response("cityfury/post.html", context, context_instance = RequestContext(request))
+

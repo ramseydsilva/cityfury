@@ -1,24 +1,38 @@
 from django.contrib.auth import authenticate, login, logout
+from django.template import Context
+from django.template.loader import get_template
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.core.validators import validate_email
 from django import forms
+import json
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth.models import User
 
 
+def SuccessfulSignInRedirect(next, modal, request):
+    if modal == "true":
+        return render_to_response("cityfury/includes/modal_close.html", {}, context_instance = RequestContext(request))
+    return HttpResponseRedirect(next)
+
 def logout_view(request):
     l = logout(request)
     next = request.GET.get('next', reverse('home'))
+    if not next:
+        next = reverse('home')
     return HttpResponseRedirect(next)
 
+def login_view(request, message='', username="", password="", template='cityfury/user/login.html', modal=False):
+    modal = request.REQUEST.get("modal", False)
+    if modal == "true":
+        template = 'cityfury/user/login_modal.html'
 
-def login_view(request, message='', username="", password="", template='cityfury/user/login.html'):
     if not request.user.is_anonymous():
         return HttpResponseRedirect(reverse("home"))
 
-    next = request.GET.get('next', reverse('home'))
+    next = request.REQUEST.get('next', reverse('home'))
+
     if request.POST:
         username = request.POST['username']
         email_exists = User.objects.filter(email=username)
@@ -27,31 +41,33 @@ def login_view(request, message='', username="", password="", template='cityfury
 
         password = request.POST['password']
 
-        next = request.POST.get('next', reverse('home'))
         user = authenticate(username=username, password=password)
 
         if user is not None:
             if user.is_active:
                 login(request, user)
-
-                return HttpResponseRedirect(next)
+                return SuccessfulSignInRedirect(next, modal, request)
 
         message = "Error logging you in, are you sure you're using the right credentials?"
 
-    context ={'message' : message, 'next' : next, 'username': username, 'password': password }
+    context ={'message' : message, 'next' : next, 'username': username, 'password': password, 'modal': modal }
     return render_to_response(template, context, context_instance = RequestContext(request))
 
 
-def register_view(request, message='', username='', password='', email=''):
+def register_view(request, message='', username='', password='', email='', template='cityfury/user/register.html', modal=False):
+    modal = request.REQUEST.get("modal", False)
+    if modal == "true":
+        template = 'cityfury/user/register_modal.html'
+
     if not request.user.is_anonymous():
         return HttpResponseRedirect(reverse("home"))
 
-    next = request.GET.get('next', reverse('home'))
+    next = request.REQUEST.get('next', reverse('home'))
+
     if request.POST:
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        next = request.POST.get('next', reverse('home'))
 
         error = False
 
@@ -74,7 +90,15 @@ def register_view(request, message='', username='', password='', email=''):
             user = User.objects.create_user(username, email, password)
             user = authenticate(username=username, password=password)
             login(request, user)
-            return HttpResponseRedirect(next)
+            return SuccessfulSignInRedirect(next, modal, request)
 
-    context = {'next': next, 'message': message, 'username': username, 'password': password, 'email': email }
-    return render_to_response('cityfury/user/register.html', context, context_instance = RequestContext(request))
+    context = {'next': next, 'message': message, 'username': username, 'password': password, 'email': email, 'modal': modal }
+    return render_to_response(template, context, context_instance = RequestContext(request))
+
+def get_login_buttons(request):
+    next = request.REQUEST.get('next', reverse('home'))
+    t = get_template('cityfury/includes/login_buttons.html')
+    to_return = {
+        "html": t.render(Context({'next': next, 'request': request }))
+    }
+    return HttpResponse(json.dumps(to_return), mimetype='application/json')

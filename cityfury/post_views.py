@@ -44,3 +44,29 @@ def get_posts(request):
     }
 
     return HttpResponse(json.dumps(to_return), mimetype='application/json')
+
+
+def dislike(request, next=None, success=False, action=None):
+    post = Post.objects.get(id=request.GET["post"])
+    if request.user.is_anonymous():
+        success = False
+        next = request.get_full_path()
+    else:
+        dislike_exists = DisLike.objects.filter(user=request.user, post=post)
+        if dislike_exists:
+            dislike = dislike_exists[0]
+            dislike.delete()
+            action = "undisliked"
+        else:
+            dislike = DisLike(user=request.user, post=post)
+            dislike.save()
+            action = "disliked"
+        success = True
+
+    to_return = {
+        'success': success,
+        'action': action,
+        'next': next,
+        'dislikes': post.dislike_set.count()
+    }
+    return HttpResponse(json.dumps(to_return), mimetype='application/json')
