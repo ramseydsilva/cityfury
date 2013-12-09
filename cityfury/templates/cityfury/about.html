@@ -1,7 +1,24 @@
 {% extends "base.html" %}
 
 {% block main %}
-<div id="content">
-    <p class="lead">About us page</p>
+<div id="content" class="home-content about-content">
+    <p class="lead">
+        In the words of the Mahatma, "Be the change you wish to see".
+    </p>
+    <p class="lead">
+        This website is still an infant. Meaning, it was born just on the eve of December 10, 2013.<br/>
+        But it is built on an age old dream, one where India is shining, and every Indian can stand tall.<br/>
+        And, while this website has so far been the handiwork of one man. The vision is shared by 
+        millions or rather billions!
+    </p>
+    <p class="lead">
+        Tired of ranting on and on about the gazillion different things that are in dire need of change, I figured it is high time<br/>
+        to take matters in my own hands. It gives me hope, knowing that I am not alone. In the next few weeks and months, stay tuned
+        for many updates to the site.
+    </p>
+    <p class="lead">
+        For ways how you can support us, visit the <a href="{% url "support" %}">support</a> page.
+        Together, we can make a difference!
+    </p>
 </div>
 {% endblock %}

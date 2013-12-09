@@ -350,3 +350,8 @@ footer {
     font-size: 20px;
     margin: 0 7px 0;
 }
+
+.about-content {
+    background: transparent url("/static/cityfury/img/gandhi.jpg") right bottom no-repeat;
+    padding-bottom: 160px !important;
+}
