@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load bootstrap_pagination %}
+
+{% block post_nav_class %}class="active"{% endblock %}
+
+{% block extra_head %}
+        <script src="{{ STATIC_URL }}cityfury/js/packery.pkgd.min.js"></script>
+        <script src="{{ STATIC_URL }}cityfury/js/jquery-ui-1.10.3.custom.js"></script>
+        <script>
+            $(function () {
+
+                // Packery stuff
+                var container = document.querySelector('#packery');
+                var pckry = new Packery(container, {
+                    itemSelector: '.item',
+                    gutter: 10
+                });
+                $('#packery .item').draggable();
+                pckry.bindUIDraggableEvents($('#packery .item'));
+                pckry.bindResize();
+
+                // On minimizing/maximizing left navs rearrange items
+                $('.minimize-control').click(function() {
+                    setTimeout(function() {
+                        pckry.layout();
+                    }, 500);
+                });
+
+                $(".full-height").css("height", $("#main").height());
+            });
+        </script>
+{% endblock %}
+
+{% block main %}
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        {% if not city %}
+            <li class="active">{{ category.name }}</li>
+        {% else %}
+            <li>{{ category.name }}</li>
+            <li class="active">{{ city.name }}</li>
+        {% endif %}
+    </ol>
+
+    <div id="content">
+    {% if posts.has_next or posts.has_prev %}
+        {% bootstrap_paginate posts range=10 show_first_last="true" %}
+    {% endif %}
+    <div id="packery">
+        {% for post in posts %}
+            {% include "cityfury/includes/packery_posts.html" %}
+        {% endfor %}
+    </div>
+
+    {% if posts.has_next or posts.has_prev %}
+        {% bootstrap_paginate posts range=10 show_first_last="true" %}
+    {% endif %}
+{% endblock %}

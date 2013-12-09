@@ -1,4 +1,3 @@
-{% load bootstrap_pagination %}
 
 <html>
     <head>
@@ -10,9 +9,6 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.0.1-p7/css/bootstrap.min.css">
 
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.0.1-p7/css/bootstrap-theme.min.css">
-
         <!-- Latest compiled and minified JavaScript -->
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
@@ -20,33 +16,6 @@
 
         <link rel="stylesheet" href="/static/cityfury/css/site.css">
 
-        {% if posts %}
-        <script src="{{ STATIC_URL }}cityfury/js/jquery.appear.js"></script>
-        <script src="{{ STATIC_URL }}cityfury/js/packery.pkgd.min.js"></script>
-        <script src="{{ STATIC_URL }}cityfury/js/jquery-ui-1.10.3.custom.js"></script>
-        <script>
-            $(function () {
-
-                // Packery stuff
-                var container = document.querySelector('#packery');
-                var pckry = new Packery(container, {
-                    itemSelector: '.item',
-                    gutter: 10
-                });
-                $('#packery .item').draggable();
-                pckry.bindUIDraggableEvents($('#packery .item'));
-                pckry.bindResize();
-
-                // On minimizing/maximizing left navs rearrange items
-                $('.minimize-control').click(function() {
-                    setTimeout(function() {
-                        pckry.layout();
-                    }, 500);
-                });
-
-            });
-        </script>
-        {% endif %}
         <script>
             function size_active_list() {
                 var active_list_items = $('.minimized li.active');
@@ -67,6 +36,22 @@
                     var remote = $(this).attr("rel");
                     $("#iframe-modal .modal-title").text("Flag Post");
                     $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;height:300px;width:530px" height="400px" width="550px" frameborder="0" />')
+                    .attr("src", remote));
+                    $('#iframe-modal').modal();
+                });
+
+                $(".resolve-button").live("click", function() {
+                    var remote = $(this).attr("rel");
+                    $("#iframe-modal .modal-title").text("Know someone who can resolve this?");
+                    $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;width:530px" height="470px" width="550px" frameborder="0" />')
+                    .attr("src", remote));
+                    $('#iframe-modal').modal();
+                });
+
+                $(".contact").live("click", function() {
+                    var remote = $(this).attr("rel");
+                    $("#iframe-modal .modal-title").text("Contact Person");
+                    $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;width:530px" height="300px" width="550px" frameborder="0" />')
                     .attr("src", remote));
                     $('#iframe-modal').modal();
                 });
@@ -145,7 +130,7 @@
             </div>
             <div class="tagline-col">
                 <p class="lead">Angry Citizens Unite!
-                    <a id="uploadAPic" class="btn btn-success" href="/post/">Upload A Pic</a>
+                    <a id="uploadAPic" class="btn btn-success" href="/post/">Upload</a>
                     <span id="login_buttons">
                         {% include "cityfury/includes/login_buttons.html" %}
                     </span>
@@ -160,7 +145,7 @@
                         {% if city and city.name != "All" %}
                             <li {% if category.name == "All" %}class="active"{% endif %}><a href="{% url "city" "all" city.name|lower %}">All</a></li>
                         {% else %}
-                            <li {% if category.name == "All" %}class="active"{% endif %}><a href="/">All</a></li>
+                            <li {% if category.name == "All" %}class="active"{% endif %}><a href="{% url "posts" %}">All</a></li>
                         {% endif %}
                         {% for c in categories %}
                             {% if city %}
@@ -190,35 +175,23 @@
                 </div>
 
                 <div id="main">
+
+                    <nav class="navbar navbar-default" role="navigation">
+                        <div class="collapse navbar-collapse lead" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav">
+                                <li {% if home_page %}class="active"{% endif %}><a href="{% url "home" %}">Home</a></li>
+                                <li {% block post_nav_class %}{% endblock %}><a href="{% url "posts" %}">Posts</a></li>
+                                <li {% if about_page %}class="active"{% endif %}><a href="{% url "about" %}">About</a></li>
+                                <li {% if contact_page %}class="active"{% endif %}><a href="{% url "contact" %}">Contact</a></li>
+                                <li {% if support_page %}class="active"{% endif %}><a href="{% url "support" %}">Support</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+
                     {% block main %}
-
-                    <ol class="breadcrumb">
-                        <li><a href="/">Home</a></li>
-                        {% if not city %}
-                            <li class="active">{{ category.name }}</li>
-                        {% else %}
-                            <li>{{ category.name }}</li>
-                            <li class="active">{{ city.name }}</li>
-                        {% endif %}
-                    </ol>
-
-                    <div id="content">
-                    {% if posts.has_next or posts.has_prev %}
-                        {% bootstrap_paginate posts range=10 show_first_last="true" %}
-                    {% endif %}
-                    <div id="packery">
-                        {% for post in posts %}
-                            {% include "cityfury/includes/packery_posts.html" %}
-                        {% endfor %}
-                    </div>
-
-                    {% if posts.has_next or posts.has_prev %}
-                        {% bootstrap_paginate posts range=10 show_first_last="true" %}
-                    {% endif %}
-
-                    </div>
-
                     {% endblock %}
+
+                    </div>
                 </div>
             </div>
         <footer>
@@ -233,9 +206,6 @@
         <h4 class="modal-title"></h4>
       </div>
       <div class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

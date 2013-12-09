@@ -29,7 +29,6 @@ def areas_data(request):
         to_return['results'].append({'id': area.id, 'text': area.name})
     return HttpResponse(json.dumps(to_return), mimetype='application/json')
 
-
 def post(request, error=False, message=""):
 
     if request.POST:

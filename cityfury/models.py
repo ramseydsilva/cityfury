@@ -14,6 +14,7 @@ class City(models.Model):
     name = models.CharField(max_length=50)
     country = models.ForeignKey(Country, null=True, blank=True)
     publish = models.BooleanField(default=False)
+    views = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
@@ -25,6 +26,7 @@ class Area(models.Model):
     name = models.CharField(max_length=50)
     city = models.ForeignKey(City)
     publish = models.BooleanField(default=False)
+    views = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
@@ -35,6 +37,14 @@ class Location(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
+    views = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return self.name
+
+class Organisation(models.Model):
+    name = models.CharField(max_length=200)
+    views = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
@@ -88,36 +98,90 @@ class PostFlag(models.Model):
     comment = models.TextField()
 
     def __unicode__(self):
-        return "%s - %s" %(self.user.username, self.post.caption)
+        return "%s - %s - %s" %(self.user.username, self.post.caption, self.comment[:10])
+
+IMAGE_POST = "I"
+TEXT_POST = "T"
+POST_TYPE_CHOICES = (
+    (IMAGE_POST, "Image"),
+    (TEXT_POST, "Text")
+)
 
 class Post(models.Model):
+    type = models.CharField(max_length=10, choices=POST_TYPE_CHOICES, default=IMAGE_POST)
     caption = models.CharField(max_length=500)
     description = models.TextField()
-    image = ImageField(upload_to=upload_to)
+    image = ImageField(upload_to=upload_to, null=True, blank=True)
     location_string = models.CharField(max_length=500, null=True, blank=True)
     location = models.ForeignKey(Location, null=True, blank=True)
     city = models.ForeignKey(City, null=True, blank=True)
     area = models.ForeignKey(Area, null=True, blank=True)
     category = models.ForeignKey(Category, null=True, blank=True)
+    organisation = models.ForeignKey(Organisation, null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     dislikes = models.ManyToManyField(User, through="Dislike", related_name="disliked_posts")
     flags = models.ManyToManyField(User, through="PostFlag", related_name="flagged_posts")
-    uploaded_date = models.DateTimeField(auto_now_add=True)
+    views = models.IntegerField(default=0)
+    popularity = models.IntegerField(default=0)
+    created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ("-uploaded_date",)
+        ordering = ("-created_date",)
 
     def __unicode__(self):
         if not self.caption:
             return "No caption: %s" %( self.id )
-        return self.caption
+        return self.caption[:50]
 
     def get_city_absolute_url(self):
-        return reverse('city', args=[self.category.name.lower(), self.city.name.lower()])
+        if self.category and self.city:
+            return reverse('city', args=[self.category.name.lower(), self.city.name.lower()])
+        if self.category:
+            return reverse("category", args=[self.category.name.lower()])
+        if self.city:
+            return reverse("city", args=["all", self.city.name.lower()])
+        return ""
 
     def get_absolute_url(self):
         return reverse('post', args=[self.id])
 
     def save(self, *args, **kwargs):
         return super(Post, self).save(*args, **kwargs)
+
+class ContactFlag(models.Model):
+    user = models.ForeignKey(User)
+    contact = models.ForeignKey("Contact")
+    comment = models.TextField()
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return "%s - %s - %s" %(self.user.username, self.contact.name, self.comment[:10])
+
+class Contact(models.Model):
+    name = models.CharField(max_length=300, default="", blank=True)
+    title = models.CharField(max_length=300, default="", blank=True)
+    website = models.CharField(max_length=300, default="", blank=True)
+    email = models.CharField(max_length=300, default="", blank=True)
+    phone = models.CharField(max_length=300, default="", blank=True)
+    organisation = models.CharField(max_length=300, default="", blank=True)
+    comments = models.TextField()
+    category = models.ForeignKey(Category, null=True, blank=True)
+    city = models.ForeignKey(City, null=True, blank=True)
+    area = models.ForeignKey(Area, null=True, blank=True)
+    post = models.ForeignKey(Post, null=True, blank=True)
+
+    added_by = models.ForeignKey(User, null=True, blank=True)
+    approved = models.BooleanField(default=False)
+    published = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        if self.name:
+            return self.name
+        if self.organisation:
+            return self.organisation
+        if self.website:
+            return self.website
+        if self.phone:
+            return self.phone

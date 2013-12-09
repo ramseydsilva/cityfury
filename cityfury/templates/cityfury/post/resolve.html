@@ -1,0 +1,67 @@
+{% extends "cityfury/includes/modal.html" %}
+
+{% block main %}
+    {% if success %}
+        <div class="alert alert-success"><strong>Thanks for your feedback!</strong> We will submit your query to the concerned individuals or to the site upon approval.</div>
+    {% else %}
+    <form class="form-horizontal" role="form" action="." method="post">{% csrf_token %}
+
+        <div class="form-group">
+            <label for="inputName" class="col-xs-2 control-label">Name</label>
+            <div class="col-xs-10">
+                <input type="text" name="name" class="form-control input-" placeholder="Contact Person Name" value="{{ name }}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputTitle" class="col-xs-2 control-label">Title</label>
+            <div class="col-xs-10">
+                <input type="text" name="title" class="form-control input-" placeholder="ex. Mayor, Corporator, MLA etc." value="{{ title }}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputOrganisation" class="col-xs-2 control-label">Organisation</label>
+            <div class="col-xs-10">
+                <input type="text" name="organisation" class="form-control" id="inputOrganisation" placeholder="Organisation" value="{{ organisation }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputWebsite" class="col-xs-2 control-label">Website</label>
+            <div class="col-xs-10">
+                <input type="text" name="website" class="form-control" placeholder="Website" value="{{ website }}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputEmail" class="col-xs-2 control-label">Email</label>
+            <div class="col-xs-10">
+                <input type="email" name="email" class="form-control" placeholder="Email" value="{{ email }}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputPhone" class="col-xs-2 control-label">Phone</label>
+            <div class="col-xs-10">
+                <input type="phone" name="phone" class="form-control" placeholder="Contact Phone Number" value="{{ phone }}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputComments" class="col-xs-2 control-label">Comments</label>
+            <div class="col-xs-10">
+                <textarea id="inputComments" name="comments" class="form-control" rows="3" placeholder="Any additional comments">{{ comments }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-offset-2 col-xs-10">
+                <input type="hidden" name="post" value="{{ post.id }}">
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </div>
+        </div>
+
+    </form>
+    {% endif %}
+{% endblock %}

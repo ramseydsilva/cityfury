@@ -1,0 +1,12 @@
+{% extends "cityfury/includes/modal.html" %}
+
+{% block main %}
+    <div class="lead">
+        Name: {{ contact.name }}<br/>
+        Title: {{ contact.title }}<br/>
+        Phone: {{ contact.phone }}<br/>
+        Email: {{ contact.email }}<br/>
+        Organisation: {{ contact.organisation }}<br/>
+        Website: <a href="{{ contact.website }}" target="blank">{{ contact.website }}</a><br/>
+    </div>
+{% endblock %}

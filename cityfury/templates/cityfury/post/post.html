@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "cityfury/post/posts.html" %}
 {% load thumbnail %}
 
 {% block extra_head %}
-    {{ block.super }}
+
     <script>
         $(function () {
-            $(".info-col").css("height", $("#main").height() - $('#main .breadcrumb').outerHeight());
+            $(".info-col").css("height", $("#main").height() - $('#main nav ').outerHeight() - $('#main .breadcrumb').outerHeight());
             $(".comment-counter").click(function() {
                 $("textarea").focus();
             });
@@ -69,8 +69,18 @@
             City: <a href="{{ post.get_city_absolute_url }}">{{ post.city.name }}</a><br/>
             Area: {{ post.area.name }}<br/>
             Location: {{ post.location_string }}<br/>
-            Posted by {% if post.user %}{{ user.username }}{% else %}Anonymous{% endif %} on {{ post.uploaded_date }}<br/>
-            <span class="flag-button" rel="{% url "flag-post" post.id %}">Flag post <span class="glyphicon glyphicon-bullhorn"></span><br/>
+            Posted by {% if post.user %}{{ user.username }}{% else %}Anonymous{% endif %} on {{ post.created_date }}<br/>
+            <span class="flag-button" rel="{% url "flag-post" post.id %}">Flag inappropriate <span class="glyphicon glyphicon-bullhorn"></span></span><br/>
+            <span class="resolve-button" rel="{% url "resolve" %}?post={{ post.id }}">Know who can resolve this? <span class="glyphicon glyphicon-ok-circle"></span></span><br/>
+
+            {% for contact in post.contact_set.all %}
+                {% if forloop.first %}
+                <div id="contact-header" class="lead">Who to contact? <span class="glyphicon glyphicon-phone-alt"></span></div>
+                {% endif %}
+                <div class="contact" rel="{% url "contact" contact.id %}?modal=true">
+                    {{ contact.name }}
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
