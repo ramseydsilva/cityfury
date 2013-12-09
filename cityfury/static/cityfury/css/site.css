@@ -345,3 +345,8 @@ footer {
     float: right;
     margin-top: -20px;
 }
+
+.home-content .glyphicon {
+    font-size: 20px;
+    margin: 0 7px 0;
+}
