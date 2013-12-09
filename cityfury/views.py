@@ -18,9 +18,38 @@ def about(request):
     }
     return render_to_response("cityfury/about.html", context, context_instance = RequestContext(request))
 
-def contact(request):
+def contact(request, message=""):
+
+    success = request.GET.get("success", False)
+    name = email = comment = ""
+
+    if request.POST:
+        name = request.POST.get("name", "")
+        email = request.POST.get("email", "")
+        comment = request.POST.get("comment", "")
+
+        if not comment:
+            message = "Please enter a comment."
+        if not email:
+            message = "Please enter your email address."
+        if not name:
+            message = "Please enter your name."
+
+        if name and email and comment:
+            contact_form = ContactForm(name=name, email=email, comment=comment)
+            if not request.user.is_anonymous():
+                contact_form.user = request.user
+            contact_form.save()
+
+            return redirect(reverse("contact") + "?success=true")
+
     context = {
-        'contact_page': True
+        'contact_page': True,
+        'success': success,
+        'message': message,
+        'name': name,
+        'email': email,
+        'comment': comment,
     }
     return render_to_response("cityfury/contact.html", context, context_instance = RequestContext(request))
 

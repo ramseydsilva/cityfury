@@ -1,7 +1,64 @@
 {% extends "base.html" %}
 
 {% block main %}
-<div id="content">
-    <p class="lead">Contact us form</p>
+<div id="content" class="home-content">
+    <p class="lead">
+        If you have any questions, concerns, feedback, we are all ears!<br/>
+        Please fill the form below.
+    </p>
+
+    <div class="row">
+        <div class="col-lg-8">
+
+            <div class="panel panel-info">
+                <div class="lead panel-heading">
+                    Contact form
+                </div>
+
+                <div class="panel-body">
+                    {% if success %}
+                        Thank you for reaching out to us. We will reply as soon as possible.
+                    {% else %}
+                        <form class="form-horizontal" role="form" action="." method="post">{% csrf_token %}
+                            {% if message %}
+                                <div class="alert alert-warning">{{ message }}</div>
+                            {% endif %}
+
+                            <div class="form-group {% if "name" in message|lower %}has-error{% endif %}">
+                                <label for="inputName" class="col-sm-2 control-label">Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputName" name="name" placeholder="Name" value="{{ name }}">
+                                </div>
+                            </div>
+
+                            <div class="form-group {% if "email" in message|lower %}has-error{% endif %}">
+                                <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="inputEmail3" name="email" placeholder="Email" value="{{ email }}">
+                                </div>
+                            </div>
+
+                            <div class="form-group {% if "comment" in message|lower %}has-error{% endif %}">
+                                <label for="inputComment" class="col-sm-2 control-label">Comment</label>
+                                <div class="col-sm-9">
+                                    <textarea name="comment" class="form-control" rows="6" placeholder="Whats on your mind">{{ comment }}</textarea>
+                                </div>
+                            </div>
+
+                         <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-9">
+                              <button type="submit" class="btn btn-info">Submit</button>
+                            </div>
+                          </div>
+                      </form>
+
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-4"></div>
+
+        </div>
+    </div>
 </div>
 {% endblock %}

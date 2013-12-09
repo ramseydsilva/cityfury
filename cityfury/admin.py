@@ -31,6 +31,9 @@ class PostAdmin(admin.ModelAdmin):
 class ContactAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "website", "phone", "post", "added_by")
 
+class ContactFormAdmin(admin.ModelAdmin):
+    list_display = ("__unicode__", "user", "date", "replied")
+
 admin.site.register(Post, PostAdmin)
 admin.site.register(Category)
 admin.site.register(City, CityAdmin)
@@ -38,3 +41,4 @@ admin.site.register(Area, AreaAdmin)
 admin.site.register(Country)
 admin.site.register(PostFlag)
 admin.site.register(Contact, ContactAdmin)
+admin.site.register(ContactForm, ContactFormAdmin)

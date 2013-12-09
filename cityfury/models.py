@@ -4,6 +4,17 @@ from sorl.thumbnail import ImageField
 from django.core.urlresolvers import reverse
 
 
+class ContactForm(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
+    comment = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, null=True, blank=True)
+    replied = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return "%s - %s" %(self.name, self.comment[:50])
+
 class Country(models.Model):
     name = models.CharField(max_length=50)
 

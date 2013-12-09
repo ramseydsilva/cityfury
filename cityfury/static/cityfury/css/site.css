@@ -355,3 +355,8 @@ footer {
     background: transparent url("/static/cityfury/img/gandhi.jpg") right bottom no-repeat;
     padding-bottom: 160px !important;
 }
+
+.panel-heading.lead {
+    margin-bottom: 0;
+}
+
