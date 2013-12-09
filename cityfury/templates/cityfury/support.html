@@ -1,7 +1,19 @@
 {% extends "base.html" %}
 
 {% block main %}
-<div id="content">
-    <p class="lead">Ways to support us and our vision</p>
+<div id="content" class="home-content">
+    <p class="lead">
+        Right now, you can contribute in one of the following ways:
+    </p>
+    <ol class="lead">
+        <li>Volunteer as site admins/moderators for your city/area</li>
+        <li>Input contact data into our database</li>
+        <li>Web/App Development Expertise</li>
+        <li>Help running our Facebook page</li>
+        <li>Partner up with us if you are a volunteer organisation working towards the same goal</li>
+    </ol>
+    <p class="lead">
+        Please <a href="{% url "contact" %}">contact</a> us to let us know how you can help!<br/>
+    </p>
 </div>
 {% endblock %}
