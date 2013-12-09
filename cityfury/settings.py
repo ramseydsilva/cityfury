@@ -20,9 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'umm8bk7j4d^8b!qbz5gmvbofg7y(@(hojh+063g-1h^zol*uoo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-THUMBNAIL_DEBUG = False 
-TEMPLATE_DEBUG = False 
+DEBUG = True
+THUMBNAIL_DEBUG = True
+TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "cityfury.com"]
 

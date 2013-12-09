@@ -1,7 +1,24 @@
 {% extends "base.html" %}
 
 {% block main %}
-<div id="content">
-    <p class="lead">Home page</p>
+<div id="content" class="home-content">
+    <div class="row">
+        <div class="lead col-lg-12">
+        Welcome to CityFury ~ A place where you can voice your conerns about the state of your city<br/>
+        and build a database of people who can resolve those issues<br/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="lead col-lg-6">
+            For ways how you can help, visit our <a href="{% url "support" %}">support</a> page<br/>
+            If you have some feedback, <a href="{% url "contact" %}">contact</a> us to let us know!<br/>
+            You can also <a href="{% url "post_form" %}">post</a> or view <a href="{% url "posts" %}">posts</a><br/><br/>
+            We are excited to see what we can build together<br/>
+            Come along for the ride!
+        </div>
+        <div class="col-lg-6">
+            <img class="home-image" width="500" src="{{ STATIC_URL }}cityfury/img/rickshaw.jpg" />
+        </div>
+    </div>
 </div>
 {% endblock %}

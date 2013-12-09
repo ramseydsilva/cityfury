@@ -242,6 +242,10 @@ a.user-auth-links:hover {
     padding: 10px;
 }
 
+.home-content {
+    padding: 20px 30px !important;
+}
+
 footer {
     padding: 30px 15px 100px 15px;
     color: #706769;
@@ -335,4 +339,9 @@ footer {
 
 .contact:hover {
     background-color: rgb(182, 182, 243);
+}
+
+.home-image {
+    float: right;
+    margin-top: -20px;
 }
