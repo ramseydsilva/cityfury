@@ -9,6 +9,59 @@
             $(".comment-counter").click(function() {
                 $("textarea").focus();
             });
+
+            $(".flag-button").live("click", function() {
+                var remote = $(this).attr("rel");
+                $("#iframe-modal .modal-title").text("Flag Post");
+                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;width:530px" height="200px" width="550px" frameborder="0" />')
+                .attr("src", remote));
+                $('#iframe-modal').modal();
+            });
+
+            $(".resolve-button").live("click", function() {
+                var remote = $(this).attr("rel");
+                $("#iframe-modal .modal-title").text("Know someone who can resolve this?");
+                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;width:530px" height="470px" width="550px" frameborder="0" />')
+                .attr("src", remote));
+                $('#iframe-modal').modal();
+            });
+
+            $(".contact").live("click", function() {
+                var remote = $(this).attr("rel");
+                $("#iframe-modal .modal-title").text("Contact Person");
+                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;width:530px" height="300px" width="550px" frameborder="0" />')
+                .attr("src", remote));
+                $('#iframe-modal').modal();
+            });
+
+            $(".dislike-button").live("click", function() {
+                var post_id = $(this).attr("rel");
+                var dislike_counter = $(".dislike-counter[rel='" + post_id + "']")
+                $.ajax({
+                    url: "{% url "dislike" %}?post=" + post_id,
+                    success: function(data, status) {
+                        if (data.success) {
+                            dislike_counter.find(".dislikes").text(data.dislikes);
+                            if (data.action == "disliked")
+                            {
+                                dislike_counter.addClass("disliked");
+                            }
+                            if (data.action == "undisliked")
+                            {
+                                dislike_counter.removeClass("disliked");
+                            }
+                        } else {
+                            var remote = "{% url 'login' %}?modal=true&close=true";
+                            $("#iframe-modal .modal-title").text("Login to DisLike Post");
+                            $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;height:300px;width:530px" height="400px" width="550px" frameborder="0" />')
+                            .attr("src", remote));
+                            $('#iframe-modal').modal();
+                        }
+                    }
+                });
+            });
+
+
         });
     </script>
 

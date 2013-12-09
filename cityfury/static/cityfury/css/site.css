@@ -267,7 +267,7 @@ footer {
 }
 
 #image-container { background-color: #32332A; text-align: center; margin: 0 0 10px 0; position: relative; }
-#post-container .caption { color: #F0F0F0; }
+#post-container .caption { color: #F0F0F0; min-height: 40px; }
 .caption { float: left; width: 100%; position: absolute; bottom: 0; background-color: rgba(0,0,0,0.4);
             padding: 10px 2%; text-align: left; margin: 0; font-size: 17px; }
 .caption span.caption-text { width: 93%; display: block; }
