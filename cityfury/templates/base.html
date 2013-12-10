@@ -111,13 +111,13 @@
                     <h3 class="lead"><span class="nav-title">Categories</span></h3>
                     <ul>
                         {% if city and city.name != "All" %}
-                            <li {% if category.name == "All" %}class="active"{% endif %}><a href="{% url "city" "all" city.name|lower %}">All</a></li>
+                            <li {% if category.name == "All" %}class="active"{% endif %}><a href="{% url "city" "all" city.slug %}">All</a></li>
                         {% else %}
                             <li {% if category.name == "All" %}class="active"{% endif %}><a href="{% url "posts" %}">All</a></li>
                         {% endif %}
                         {% for c in categories %}
                             {% if city %}
-                                <li {% if category == c %}class="active"{% endif %}><a href="{% url "city" c.slug city.name|lower %}">{{ c.name }}</a></li>
+                                <li {% if category == c %}class="active"{% endif %}><a href="{% url "city" c.slug city.slug %}">{{ c.name }}</a></li>
                             {% else %}
                                 <li {% if category == c %}class="active"{% endif %}><a href="{% url "category" c.slug %}">{{ c.name }}</a></li>
                             {% endif %}
@@ -133,9 +133,9 @@
                             <li class="{% if city.name|lower == "all" %}active{% endif %}"><a href="{% if category %}{% url "category" category.slug %}{% else %}{% url "posts" %}{% endif %}">All</a></li>
                             {% for c in cities %}
                                 {% if category.name %}
-                                    <li class="{% if c == city %}active{% endif %}"><a href="{% url "city" category.slug c.name|lower %}">{{ c.name }}</a></li>
+                                    <li class="{% if c == city %}active{% endif %}"><a href="{% url "city" category.slug c.slug %}">{{ c.name }}</a></li>
                                 {% else %}
-                                    <li class="{% if c == city %}active{% endif %}"><a href="{% url "city" "all" c.name|lower %}">{{ c.name }}</a></li>
+                                    <li class="{% if c == city %}active{% endif %}"><a href="{% url "city" "all" c.slug %}">{{ c.name }}</a></li>
                                 {% endif %}
                             {% endfor %}
                         </ul>

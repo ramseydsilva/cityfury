@@ -46,7 +46,7 @@ def get_posts(request):
     return HttpResponse(json.dumps(to_return), mimetype='application/json')
 
 def posts(request):
-    category = city = {'name': 'All'}
+    category = city = {'name': 'All', 'slug': 'all'}
 
     posts = Post.objects.all()
     paginator = Paginator(posts, 50)
@@ -85,7 +85,7 @@ def category(request, category):
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
 
-    city = {'name': 'All'}
+    city = {'name': 'All', 'slug': 'all'}
 
     context = {
         'city': city,
@@ -103,7 +103,7 @@ def city(request, category, city):
     posts = city.post_set.all()
 
     if category == "all":
-        category = {'name': 'All'}
+        category = {'name': 'All', 'slug': 'all'}
     else:
         category = get_object_or_404(Category, name__iexact=category)
         posts = posts.filter(category=category)
