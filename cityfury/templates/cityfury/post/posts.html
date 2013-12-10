@@ -43,6 +43,11 @@
     </ol>
 
     <div id="content">
+
+    {% if not posts %}
+        <p class="lead">There are currently no posts in this category. Click <a href="{% url "post_form" %}">here</a> to start posting!</p>
+    {% endif %}
+
     {% if posts.has_next or posts.has_prev %}
         {% bootstrap_paginate posts range=10 show_first_last="true" %}
     {% endif %}

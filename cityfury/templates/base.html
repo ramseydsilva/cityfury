@@ -97,8 +97,9 @@
             </div>
             <div class="tagline-col">
                 <p class="lead">Furiously Passionate about your City!
-                    <a id="uploadAPic" class="btn btn-success" href="/post/">Upload</a>
+                <a id="uploadAPic" class="btn btn-success" href="{% url "post_form" %}">Post a Pic</a>
                     <span id="login_buttons">
+                        <a class="user-auth-links" href="https://www.facebook.com/cityfury" target="blank" title="Like us on facebook" alt="Like us on facebook"><img style="margin-top: -5px;" width="30" src="{{ STATIC_URL }}cityfury/img/facebook_like.png" /></a>
                         {% include "cityfury/includes/login_buttons.html" %}
                     </span>
                 </p>
