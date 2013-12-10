@@ -73,7 +73,7 @@ def category(request, category):
     if category == "all":
         return redirect("/")
 
-    category = get_object_or_404(Category, name__iexact=category)
+    category = get_object_or_404(Category, slug=category)
 
     posts = Post.objects.filter(category=category)
     paginator = Paginator(posts, 50)
@@ -99,13 +99,13 @@ def city(request, category, city):
     if city == "all":
         return redirect(reverse("category", args=[category]))
 
-    city = get_object_or_404(City, name__iexact=city)
+    city = get_object_or_404(City, slug=city)
     posts = city.post_set.all()
 
     if category == "all":
         category = {'name': 'All', 'slug': 'all'}
     else:
-        category = get_object_or_404(Category, name__iexact=category)
+        category = get_object_or_404(Category, slug=category)
         posts = posts.filter(category=category)
 
     paginator = Paginator(posts, 50)

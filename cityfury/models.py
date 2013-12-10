@@ -24,6 +24,7 @@ class Country(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=50)
+    slug = models.SlugField()
     country = models.ForeignKey(Country, null=True, blank=True)
     publish = models.BooleanField(default=False)
     views = models.IntegerField(default=0)
@@ -34,8 +35,9 @@ class City(models.Model):
     def get_absolute_url(self):
         return reverse('city', args=["all", self.name.lower()])
 
-    def slug(self):
-        return slugify(self.name)
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(City, self).save(*args, **kwargs)
 
 class Area(models.Model):
     name = models.CharField(max_length=50)
@@ -52,13 +54,15 @@ class Location(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
+    slug = models.SlugField()
     views = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
 
-    def slug(self):
-        return slugify(self.name)
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Category, self).save(*args, **kwargs)
 
 class Organisation(models.Model):
     name = models.CharField(max_length=200)

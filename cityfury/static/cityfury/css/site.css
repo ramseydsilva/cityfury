@@ -213,7 +213,7 @@ header .tagline-col {
 #second-nav ul li a, #first-nav ul li a {
     display: block;
     float: left;
-    width: 100%;
+    width: 300px;
 }
 
 #second-nav ul li a:hover, #first-nav ul li a:hover {
