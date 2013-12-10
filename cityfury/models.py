@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
 from django.core.urlresolvers import reverse
@@ -33,6 +34,9 @@ class City(models.Model):
     def get_absolute_url(self):
         return reverse('city', args=["all", self.name.lower()])
 
+    def slug(self):
+        return slugify(self.name)
+
 class Area(models.Model):
     name = models.CharField(max_length=50)
     city = models.ForeignKey(City)
@@ -52,6 +56,9 @@ class Category(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def slug(self):
+        return slugify(self.name)
 
 class Organisation(models.Model):
     name = models.CharField(max_length=200)
@@ -147,9 +154,9 @@ class Post(models.Model):
 
     def get_city_absolute_url(self):
         if self.category and self.city:
-            return reverse('city', args=[self.category.name.lower(), self.city.name.lower()])
+            return reverse('city', args=[self.category.slug(), self.city.name.lower()])
         if self.category:
-            return reverse("category", args=[self.category.name.lower()])
+            return reverse("category", args=[self.category.slug()])
         if self.city:
             return reverse("city", args=["all", self.city.name.lower()])
         return ""
