@@ -23,10 +23,10 @@ urlpatterns = patterns('',
     url(r'^posts/get_posts/$', 'cityfury.post_views.get_posts', name="get_posts"),
     url(r'^posts/$', 'cityfury.post_views.posts', name='posts'),
     url(r'^posts/dislike/$', 'cityfury.post_views.dislike', name='dislike'),
+    url(r'^posts/flag/(?P<post_id>[-\d]+)/$', 'cityfury.post_views.flag', name='flag-post'),
     url(r'^posts/(?P<post_id>[-\d]+)/$', 'cityfury.post_views.post', name='post'),
     url(r'^posts/(?P<category>[-\w]+)/$', 'cityfury.post_views.category', name='category'),
     url(r'^posts/(?P<category>[-\w]+)/(?P<city>[-\w]+)/$', 'cityfury.post_views.city', name='city'),
-    url(r'^posts/flag/(?P<post_id>[-\d]+)/$', 'cityfury.post_views.flag', name='flag-post'),
 
     # post form views
     url(r'^post/$', 'cityfury.form_views.post', name='post_form'),
