@@ -1,1 +1,3 @@
 /cityfury/media
+*.pyc
+/db.sqlite3
