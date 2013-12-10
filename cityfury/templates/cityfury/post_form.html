@@ -142,7 +142,7 @@ $(function () {
         ajax: {
             'dataType': 'json', 
             'quietMillis': 100,
-            'url': '/cities/data/',
+            'url': '{% url "cities_data" %}',
             'data': django_select2.runInContextHelper(django_select2.get_url_params, 'id_city'),
             'results': django_select2.runInContextHelper(django_select2.process_results, 'id_city')
         },
@@ -167,7 +167,7 @@ $(function () {
         'ajax': {
             'dataType': 'json', 
             'quietMillis': 100,
-            'url': '/areas/data/',
+            'url': '{% url "areas_data" %}',
             'data': function(term, page) {
                 var to_return = {"term": term, "city": $('#id_city').val()};
                 return to_return;
