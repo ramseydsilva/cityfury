@@ -1,12 +1,37 @@
 {% extends "cityfury/includes/modal.html" %}
 
+{% block extra_head %}
+    <script>
+        parent.resizeModal("short_modal");
+        parent.titleModal("Contact: {{ contact }}");
+        {% if success %}
+            parent.addContactToPost("{{ contact }}", "{% url 'contact'  contact.id %}");
+        {% endif %}
+        $(function () {
+            parent.resizeIframe($("body").height());
+        });
+    </script>
+    <style>
+        body { height: 300px; }
+    </style>
+{% endblock %}
+
 {% block main %}
+
+    {% if success %}
+        <div class="alert alert-success">Your contact has been added. Thanks for the input!</div>
+    {% endif %}
+
     <div class="lead">
-        Name: {{ contact.name }}<br/>
-        Title: {{ contact.title }}<br/>
-        Phone: {{ contact.phone }}<br/>
-        Email: {{ contact.email }}<br/>
-        Organisation: {{ contact.organisation }}<br/>
-        Website: <a href="{{ contact.website }}" target="blank">{{ contact.website }}</a><br/>
+        {% include "cityfury/contact/includes/contact.html" %}
     </div>
+
+    <a href="{% url "contact_correct" contact.id %}">
+        <span class="glyphicon glyphicon-wrench"></span> {% if request.user == contact.added_by %}Edit Contact{% else %}Suggest a correction{% endif %}
+    </a><br/>
+    {% if contact.contactcorrection_set.all %}
+    <a href="{% url "contact_view_corrections" contact.id %}">
+        <span class="glyphicon glyphicon-list"></span> View corrections
+    </a>
+    {% endif %}
 {% endblock %}

@@ -34,6 +34,9 @@ class ContactAdmin(admin.ModelAdmin):
 class ContactFormAdmin(admin.ModelAdmin):
     list_display = ("__unicode__", "user", "date", "replied")
 
+class ContactCorrectionAdmin(admin.ModelAdmin):
+    list_display = ("__unicode__", "contact", "published", "added_by", "created_date")
+
 admin.site.register(Post, PostAdmin)
 admin.site.register(Category)
 admin.site.register(City, CityAdmin)
@@ -42,3 +45,4 @@ admin.site.register(Country)
 admin.site.register(PostFlag)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(ContactForm, ContactFormAdmin)
+admin.site.register(ContactCorrection, ContactCorrectionAdmin)

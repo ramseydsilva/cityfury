@@ -186,36 +186,3 @@ def flag(request, post_id, success=False, template="cityfury/post/flag.html"):
 
     return render_to_response(template, context, context_instance = RequestContext(request))
 
-def resolve(request, template="cityfury/post/resolve.html", success=False):
-    name = title = email = website = phone = organisation = comments = ""
-
-    post = request.REQUEST.get("post", None)
-    if post:
-        post = get_object_or_404(Post, id=post)
-
-    if request.POST:
-        name = request.POST["name"]
-        title = request.POST["title"]
-        website = request.POST["website"]
-        email = request.POST["email"]
-        phone = request.POST["phone"]
-        organisation = request.POST["organisation"]
-        comments = request.POST["comments"]
-
-        contact = Contact(post=post, name=name, title=title, website=website, email=email, phone=phone, organisation=organisation, comments=comments)
-        if not request.user.is_anonymous():
-            contact.added_by = request.user
-        contact.save()
-        success = True
-
-    context = {
-        "name": name,
-        "title": title,
-        "website": website,
-        "email": email,
-        "phone": phone,
-        "comments": comments,
-        "post": post,
-        "success": success,
-    }
-    return render_to_response(template, context, context_instance = RequestContext(request))

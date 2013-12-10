@@ -20,16 +20,14 @@
 
             $(".resolve-button").live("click", function() {
                 var remote = $(this).attr("rel");
-                $("#iframe-modal .modal-title").text("Know someone who can resolve this?");
-                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;width:530px" height="470px" width="550px" frameborder="0" />')
+                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;" height="80%" width="95%" frameborder="0" />')
                 .attr("src", remote));
                 $('#iframe-modal').modal();
             });
 
             $(".contact").live("click", function() {
                 var remote = $(this).attr("rel");
-                $("#iframe-modal .modal-title").text("Contact Person");
-                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;width:530px" height="300px" width="550px" frameborder="0" />')
+                $("#iframe-modal .modal-body").html($('<iframe style="hidden: auto;" height="80%" width="95%" frameborder="0" />')
                 .attr("src", remote));
                 $('#iframe-modal').modal();
             });
@@ -81,7 +79,7 @@
 
 {% block main %}
     <ol class="breadcrumb">
-        <li><a href="/">Home</a></li>
+        <li><a href="{% url "posts" %}">Posts</a></li>
         <li>Post</li>
         <li class="active">{{ post.caption|truncatechars:60 }}</li>
     </ol>
@@ -126,14 +124,16 @@
             <span class="flag-button" rel="{% url "flag-post" post.id %}">Flag inappropriate <span class="glyphicon glyphicon-bullhorn"></span></span><br/>
             <span class="resolve-button" rel="{% url "resolve" %}?post={{ post.id }}">Know who can resolve this? <span class="glyphicon glyphicon-ok-circle"></span></span><br/>
 
+            <div class="contact-container">
             {% for contact in post.contact_set.all %}
                 {% if forloop.first %}
                 <div id="contact-header" class="lead">Who to contact? <span class="glyphicon glyphicon-phone-alt"></span></div>
                 {% endif %}
                 <div class="contact" rel="{% url "contact" contact.id %}?modal=true">
-                    {{ contact.name }}
+                    {{ contact }}
                 </div>
             {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

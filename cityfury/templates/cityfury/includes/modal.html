@@ -14,10 +14,15 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.0.1-p7/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="/static/cityfury/css/modal.css">
-    <script>parent.getLoginButtons();</script>
+
+    {% block extra_head %}
+        <script>parent.getLoginButtons();</script>
+    {% endblock %}
+
     <style>
         body {overflow: hidden; }
     </style>
+
 </head>
 <body>
     {% block main %}{% endblock %}
