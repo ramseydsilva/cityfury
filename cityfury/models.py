@@ -33,7 +33,7 @@ class City(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('city', args=["all", self.name.lower()])
+        return reverse('city', args=["all", self.slug])
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -158,11 +158,11 @@ class Post(models.Model):
 
     def get_city_absolute_url(self):
         if self.category and self.city:
-            return reverse('city', args=[self.category.slug(), self.city.name.lower()])
+            return reverse('city', args=[self.category.slug, self.city.slug])
         if self.category:
-            return reverse("category", args=[self.category.slug()])
+            return reverse("category", args=[self.category.slug])
         if self.city:
-            return reverse("city", args=["all", self.city.name.lower()])
+            return reverse("city", args=["all", self.city.slug])
         return ""
 
     def get_absolute_url(self):

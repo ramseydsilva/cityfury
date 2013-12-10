@@ -67,7 +67,7 @@ def post(request, error=False, message=""):
             try:
                 area = Area.objects.get(id=area, city=city)
             except:
-                if not area.isdigit():
+                if area and not area.isdigit():
                     try:
                         area = Area.objects.get(name__iexact=area, city=city)
                     except:
