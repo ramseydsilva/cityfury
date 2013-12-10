@@ -1,0 +1,28 @@
+{% extends "cityfury/includes/modal.html" %}
+
+{% block extra_head %}
+    <script>
+        parent.resizeModal("large_modal");
+        parent.titleModal("Contact Corrections: {{ contact }}");
+
+        $(function () {
+            parent.resizeIframe($(document).height());
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+
+    <a href="{% url "contact" contact.id %}">Return to Contact</a>
+    <hr/>
+    {% for contact_correction in contact.contactcorrection_set.all %}
+        <div class="lead">
+            {% include "cityfury/contact/includes/contact.html" with contact=contact_correction %}
+            Date Submitted: {{ contact_correction.created_date }}<br/>
+            Added: {{ contact_correction.published }}<br/>
+        </div>
+        <hr/>
+    {% endfor %}
+    <a href="{% url "contact" contact.id %}">Return to Contact</a>
+
+{% endblock %}

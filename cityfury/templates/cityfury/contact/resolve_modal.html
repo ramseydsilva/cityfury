@@ -1,0 +1,16 @@
+{% extends "cityfury/includes/modal.html" %}
+
+{% block extra_head %}
+    <script>
+        parent.resizeModal("large_modal");
+        parent.titleModal("Know someone who can resolve this?");
+    </script>
+{% endblock %}
+
+{% block main %}
+    {% if message %}
+        <div class="alert alert-warning">{{ message }}</div>
+    {% endif %}
+
+    {% include "cityfury/contact/includes/form.html" %}
+{% endblock %}

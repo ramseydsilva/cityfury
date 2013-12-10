@@ -33,7 +33,7 @@
 
 {% block main %}
     <ol class="breadcrumb">
-        <li><a href="/">Home</a></li>
+        <li><a href="{% url "posts" %}">Posts</a></li>
         {% if not city %}
             <li class="active">{{ category.name }}</li>
         {% else %}

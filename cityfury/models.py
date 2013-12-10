@@ -169,6 +169,54 @@ class ContactFlag(models.Model):
     def __unicode__(self):
         return "%s - %s - %s" %(self.user.username, self.contact.name, self.comment[:10])
 
+class ContactCorrection(models.Model):
+    name = models.CharField(max_length=300, default="", blank=True)
+    title = models.CharField(max_length=300, default="", blank=True)
+    website = models.CharField(max_length=300, default="", blank=True)
+    email = models.CharField(max_length=300, default="", blank=True)
+    phone = models.CharField(max_length=300, default="", blank=True)
+    organisation = models.CharField(max_length=300, default="", blank=True)
+    comments = models.TextField()
+    category = models.ForeignKey(Category, null=True, blank=True)
+    city = models.ForeignKey(City, null=True, blank=True)
+    area = models.ForeignKey(Area, null=True, blank=True)
+    contact = models.ForeignKey("Contact")
+
+    added_by = models.ForeignKey(User, null=True, blank=True)
+    published = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-created_date",)
+
+    def __unicode__(self):
+        if self.name:
+            return self.name
+        if self.organisation:
+            return self.organisation
+        if self.website:
+            return self.website
+        if self.phone:
+            return self.phone
+        if self.email:
+            return self.email
+        return None
+
+    def implement_correction(self):
+        self.contact.name = self.name
+        self.contact.title = self.title
+        self.contact.website = self.website
+        self.contact.email = self.email
+        self.contact.phone = self.phone
+        self.contact.organisation = self.organisation
+        self.published = True
+        self.contact.save()
+
+    def save(self, *args, **kwargs):
+        if self.added_by and self.contact.added_by and self.added_by == self.contact.added_by:
+            self.implement_correction()
+        super(ContactCorrection, self).save(*args, **kwargs)
+
 class Contact(models.Model):
     name = models.CharField(max_length=300, default="", blank=True)
     title = models.CharField(max_length=300, default="", blank=True)
@@ -196,3 +244,6 @@ class Contact(models.Model):
             return self.website
         if self.phone:
             return self.phone
+        if self.email:
+            return self.email
+        return None

@@ -1,0 +1,31 @@
+{% extends "cityfury/includes/modal.html" %}
+
+{% block extra_head %}
+    <script>
+        parent.resizeModal("large_modal");
+        parent.titleModal("{% if request.user == contact.added_by %}Edit Contact:{% else %}Suggest a Correction:{% endif %} {{ contact }}");
+        $(function () {
+            parent.resizeIframe($(document).height());
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+    {% if success %}
+    <div class="alert alert-success">
+        {% if request.user == contact.added_by %}
+            Your changes have been added, thanks for the input!
+        {% else %}
+            Thank you for your input! We will add your suggestion to the site upon review.
+        {% endif %}
+    </div>
+    <a href="{% url "contact" contact.id %}">Go back to Contact</a>
+    {% else %}
+
+        {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endif %}
+
+        {% include "cityfury/contact/includes/form.html" %}
+    {% endif %}
+{% endblock %}

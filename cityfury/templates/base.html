@@ -2,7 +2,7 @@
 <html>
     <head>
 
-        <title>CityFury - Angry Citizens Unite!</title>
+        <title>CityFury - {% block title %}Furiously Passionate about your City!{% endblock %}</title>
 
         <link rel="shortcut icon" type="image/x-icon" href="/static/cityfury/img/favicon.ico">
 
@@ -47,6 +47,24 @@
                 }
                 window.getLoginButtons = getLoginButtons;
 
+                window.resizeModal = function(modal_class) {
+                    $("#iframe-modal .modal-content").attr("class", "modal-content");
+                    $("#iframe-modal .modal-content").addClass(modal_class);
+                }
+
+                window.titleModal = function(modal_title) {
+                    $("#iframe-modal .modal-title").text(modal_title);
+                }
+
+                window.resizeIframe = function(newHeight)
+                {
+                    $('#iframe-modal .modal-body iframe').css("height", newHeight);
+                }
+
+                window.addContactToPost = function(text, url) {
+                    $(".contact-container").append("<div class='contact' rel='" + url +"'>" + text + "</div>");
+                }
+
                 function maximizeNav(el) {
                     el.parent().removeClass('minimized').addClass('maximized');
                     el.removeClass('glyphicon-align-justify').addClass('glyphicon-align-left');
@@ -78,7 +96,7 @@
                 <a href="/" id="logo" class="lead">CityFury</a>
             </div>
             <div class="tagline-col">
-                <p class="lead">Angry Citizens Unite!
+                <p class="lead">Furiously Passionate about your City!
                     <a id="uploadAPic" class="btn btn-success" href="/post/">Upload</a>
                     <span id="login_buttons">
                         {% include "cityfury/includes/login_buttons.html" %}
@@ -111,7 +129,7 @@
                         <a class="minimize-control glyphicon glyphicon-align-{% if open_city_nav %}left{% else %}justify{% endif %}"></a>
                         <h3 class="lead"><span class="nav-title">Cities</span></h3>
                         <ul>
-                            <li class="{% if city.name|lower == "all" %}active{% endif %}"><a href="{% if category %}{% url "category" category.name|lower %}{% else %}/{% endif %}">All</a></li>
+                            <li class="{% if city.name|lower == "all" %}active{% endif %}"><a href="{% if category %}{% url "category" category.name|lower %}{% else %}{% url "posts" %}{% endif %}">All</a></li>
                             {% for c in cities %}
                                 {% if category.name %}
                                     <li class="{% if c == city %}active{% endif %}"><a href="{% url "city" category.name|lower c.name|lower %}">{{ c.name }}</a></li>

@@ -360,3 +360,13 @@ footer {
     margin-bottom: 0;
 }
 
+.large_modal {
+    width: 600px;
+    height: 600px;
+    overflow: scroll;
+}
+
+.short_modal {
+    width: 500px;
+    height: 400px;
+}
