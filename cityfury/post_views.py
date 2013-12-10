@@ -125,7 +125,7 @@ def city(request, category, city):
     return render_to_response("cityfury/post/city.html", context, context_instance = RequestContext(request))
 
 def post(request, post_id):
-    post = Post.objects.get(id=post_id)
+    post = get_object_or_404(Post, id=post_id)
 
     if request.POST:
         comment = request.POST["comment"]
