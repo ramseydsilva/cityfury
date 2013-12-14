@@ -210,7 +210,7 @@ $(function () {
         'width': '250px'
     });
 
-    var url = '/post/',
+    var url = '{% url "post_picture" %}',
         csrftoken = $.cookie('csrftoken'),
         uploadButton = $('<button/>')
             .addClass('btn btn-primary')
