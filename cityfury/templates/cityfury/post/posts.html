@@ -26,6 +26,8 @@
                     }, 500);
                 });
 
+                pckry.layout();
+
                 $(".full-height").css("height", $("#main").height());
             });
         </script>
@@ -45,7 +47,7 @@
     <div id="content">
 
     {% if not posts %}
-        <p class="lead">There are currently no posts in this category. Click <a href="{% url "post_form" %}">here</a> to start posting!</p>
+        <p class="lead">There are currently no posts in this category. Click <a href="{% url "post_something" %}">here</a> to start posting!</p>
     {% endif %}
 
     {% if posts.has_next or posts.has_prev %}

@@ -221,17 +221,21 @@ header .tagline-col {
     color: #428bca;
 }
 
-.user-auth-links , #uploadAPic {
+.header-links {
     font-size: 16px;
     margin: 0 5px; 
     float: right;
 }
 
-.user-auth-links {
+.header-links {
     margin: 5px 7px;
 }
 
-a.user-auth-links:hover {
+.header-links.btn {
+    margin: 0 7px;
+}
+
+a.header-links:hover {
     text-decoration: none;
     color: #77BFFD;
 }
@@ -271,6 +275,7 @@ footer {
 }
 
 #image-container { background-color: #32332A; text-align: center; margin: 0 0 10px 0; position: relative; }
+#article-container { position: relative; }
 #post-container .caption { color: #F0F0F0; min-height: 40px; }
 .caption { float: left; width: 100%; position: absolute; bottom: 0; background-color: rgba(0,0,0,0.4);
             padding: 10px 2%; text-align: left; margin: 0; font-size: 17px; }
@@ -369,4 +374,18 @@ footer {
 .short_modal {
     width: 500px;
     height: 400px;
+}
+
+.item-article {
+    width: 400px !important;
+    padding-bottom: 25px !important;
+}
+
+#article h3 {
+    margin-top: 0;
+}
+
+.article-snippet img {
+    max-width: 380px;
+    height: auto;
 }

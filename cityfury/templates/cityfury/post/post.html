@@ -70,10 +70,13 @@
         .info-col { margin-bottom: 0; padding: 10px 20px 10px 10px; }
         .info-col { background-color: #1C221F; font-size: 15px; color: rgb(172, 153, 153); }
         #comment { padding: 0 10px; }
-        #description, .comment-container { background-color: #f5f5f5; color: #999; padding: 15px 15px 10px 15px; margin: 0 0 10px 0; }
-        #description { margin: -10px 0 10px 0; color: #47430E; font-size: 16px; }
+        #article, #description, .comment-container { background-color: #EDEEEB; color: #999; padding: 15px 15px 10px 15px; margin: 0 0 10px 0; }
+        #description { margin: -10px 0 10px 0; }
+        #description, #article { color: #363636; font-size: 16px; }
+        #article { padding-bottom: 50px; }
         .comment-container .comment { color: #666; }
         textarea { margin-bottom: 10px; }
+        .posted-by { color: rgb(218, 221, 220); }
     </style>
 {% endblock %}
 
@@ -86,19 +89,37 @@
     <div class="row" id="post-container">
 
         <div class="col-sm-9" id="post-main-col">
-            <div id="image-container">
-            {% thumbnail post.image "400" as im %}
-                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-            {% endthumbnail %}
-                <div class="caption lead">
-                    <span class="caption-text">{{ post.caption }}</span>
-                    <div class="dislike-button dislike-counter {% if user in post.dislikes.all %}disliked{% endif %}" rel="{{ post.id }}">
-                        <span class="dislikes">{{ post.dislike_set.count }}</span> <span class="glyphicon glyphicon-thumbs-down"></span>
+            {% if post.type == "I" %}
+                <div id="image-container">
+                {% thumbnail post.image "400" as im %}
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+                    <div class="caption lead">
+                        <span class="caption-text">{{ post.caption }}</span>
+                        <div class="dislike-button dislike-counter {% if user in post.dislikes.all %}disliked{% endif %}" rel="{{ post.id }}">
+                            <span class="dislikes">{{ post.dislike_set.count }}</span> <span class="glyphicon glyphicon-thumbs-down"></span>
+                        </div>
+                        <a href="#comment"><div class="comment-counter">{{ post.comment_set.count }} <span class="glyphicon glyphicon-comment"></span></div></a>
                     </div>
-                    <a href="#comment"><div class="comment-counter">{{ post.comment_set.count }} <span class="glyphicon glyphicon-comment"></span></div></a>
                 </div>
-            </div>
-            {% if post.description %}<div id="description" class="lead">{{ post.description }}</div>{% endif %}
+                {% if post.description %}<div id="description" class="lead">{{ post.description }}</div>{% endif %}
+            {% endif %}
+
+            {% if post.type = "T" %}
+                <div id="article-container">
+                    <div id="article" class="lead">
+                        <h3>{{ post.caption }}</h3>
+                        {{ post.description|safe }}
+                    </div>
+                    <div class="caption lead">
+                        <div class="dislike-button dislike-counter {% if user in post.dislikes.all %}disliked{% endif %}" rel="{{ post.id }}">
+                            <span class="dislikes">{{ post.dislike_set.count }}</span> <span class="glyphicon glyphicon-thumbs-down"></span>
+                        </div>
+                        <a href="#comment"><div class="comment-counter">{{ post.comment_set.count }} <span class="glyphicon glyphicon-comment"></span></div></a>
+                    </div>
+                </div>
+            {% endif %}
+
             <div id="comment">
                 <form action="." method="post">{% csrf_token %}
                     <textarea class="form-control" rows="3" name="comment" placeholder="{% if post.comment_set.all %}Leave a comment{% else %}Be the first to comment{% endif %}"></textarea>
@@ -116,11 +137,11 @@
             </div>
         </div>
         <div class="lead info-col col-sm-3">
+            <span class="posted-by">Posted by {% if post.user %}{{ user.username }}{% else %}Anonymous{% endif %} on {{ post.created_date }}</span><br/>
             Category: <a href="{{ post.get_city_absolute_url }}">{{ post.category.name }}</a><br/>
             City: <a href="{{ post.get_city_absolute_url }}">{{ post.city.name }}</a><br/>
             Area: {{ post.area.name }}<br/>
             Location: {{ post.location_string }}<br/>
-            Posted by {% if post.user %}{{ user.username }}{% else %}Anonymous{% endif %} on {{ post.created_date }}<br/>
             <span class="flag-button" rel="{% url "flag-post" post.id %}">Flag inappropriate <span class="glyphicon glyphicon-bullhorn"></span></span><br/>
             <span class="resolve-button" rel="{% url "resolve" %}?post={{ post.id }}">Know who can resolve this? <span class="glyphicon glyphicon-ok-circle"></span></span><br/>
 

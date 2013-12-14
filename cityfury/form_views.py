@@ -29,8 +29,10 @@ def areas_data(request):
         to_return['results'].append({'id': area.id, 'text': area.name})
     return HttpResponse(json.dumps(to_return), mimetype='application/json')
 
-def post(request, error=False, message=""):
+def post_something(request):
+    return redirect(reverse("post_picture"))
 
+def post_picture(request, error=False, message=""):
     if request.POST:
         caption = request.POST["caption"]
         description = request.POST["description"]
@@ -98,7 +100,83 @@ def post(request, error=False, message=""):
         'cities': City.objects.all(),
         'categories': Category.objects.all(),
         'categories_json': json.dumps(categories_json),
-        'message': message
+        'message': message,
+        'post_picture': True,
     }
 
-    return render_to_response("cityfury/post_form.html", context, context_instance = RequestContext(request))
+    return render_to_response("cityfury/post_picture.html", context, context_instance = RequestContext(request))
+
+def post_article(request, error=False, message=""):
+    caption = description = ""
+
+    if request.POST:
+        caption = request.POST["caption"]
+        description = request.POST["description"]
+        category = request.POST["category"]
+        city = request.POST["city"]
+        area = request.POST.get("area", None)
+
+        if caption == "":
+            error = True
+            message = "Please enter a title for your post"
+        elif description == "":
+            error = True
+            message = "Please enter some content!"
+        else:
+
+            if category == "":
+                error = True
+                message = "Please enter a category"
+            else:
+                category = Category.objects.get(id=category)
+            if city == "":
+                error = True
+                message = "Please enter a city"
+            else:
+                try:
+                    city = City.objects.get(id=city)
+                    city_created = False
+                except:
+                    try:
+                        city = City.objects.get(name__iexact=city)
+                    except:
+                        city = City(name=city.capitalize())
+                        city.save()
+                        city_created = True
+
+            if area != "":
+                try:
+                    area = Area.objects.get(id=area, city=city)
+                except:
+                    if area and not area.isdigit():
+                        try:
+                            area = Area.objects.get(name__iexact=area, city=city)
+                        except:
+                            area = Area(name=area.capitalize(), city=city)
+                            area.save()
+            else:
+                area = None
+
+        if not error:
+            post = Post(caption=caption, description=description, category=category, city=city, area=area, type="T")
+            post.save()
+            if not request.user.is_anonymous():
+                post.user = request.user
+                post.save()
+            return redirect(reverse("post", args=[post.id]))
+
+    categories_json = []
+    for category in Category.objects.all():
+        categories_json.append({'id': category.id, 'text': category.name})
+
+    context = {
+        'cities': City.objects.all(),
+        'categories': Category.objects.all(),
+        'categories_json': json.dumps(categories_json),
+        'caption': caption,
+        'description': description,
+        'message': message,
+        'post_article': True,
+    }
+
+    return render_to_response("cityfury/post_article.html", context, context_instance = RequestContext(request))

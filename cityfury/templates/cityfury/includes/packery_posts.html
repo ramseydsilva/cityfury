@@ -1,10 +1,16 @@
 {% load thumbnail %}
 
 <a href="{{ post.get_absolute_url }}">
-    <div class="item">
+    <div class="item {% if post.type == "T" %}item-article{% endif %}">
+        {% if post.type = "I" %}
         {% thumbnail post.image "300" quality=50 as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
         {% endthumbnail %}
+        {% endif %}
+
+        {% if post.type = "T" %}
+            <div class="article-snippet">{{ post.description|truncatewords_html:100|safe }}</div>
+        {% endif %}
 
         <div class="caption lead">
             <span class="caption-text">{{ post.caption }}</span>

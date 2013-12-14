@@ -29,7 +29,9 @@ urlpatterns = patterns('',
     url(r'^posts/(?P<category>[-\w]+)/(?P<city>[-\w]+)/$', 'cityfury.post_views.city', name='city'),
 
     # post form views
-    url(r'^post/$', 'cityfury.form_views.post', name='post_form'),
+    url(r'^post/$', 'cityfury.form_views.post_something', name='post_something'),
+    url(r'^post/picture/$', 'cityfury.form_views.post_picture', name='post_picture'),
+    url(r'^post/article/$', 'cityfury.form_views.post_article', name='post_article'),
     url(r'^post/cities/data/$', 'cityfury.form_views.cities_data', name='cities_data'),
     url(r'^post/areas/data/$', 'cityfury.form_views.areas_data', name='areas_data'),
 

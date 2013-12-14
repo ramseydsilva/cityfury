@@ -1,0 +1,72 @@
+{% extends "cityfury/post_picture.html" %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+    <script>
+tinymce.init({
+    selector: "textarea",
+    plugins: [
+        "advlist autolink lists link image charmap print preview anchor",
+        "searchreplace visualblocks code fullscreen",
+        "insertdatetime media table contextmenu paste"
+    ],
+    toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+    autosave_ask_before_unload: false,
+    max_height: 200,
+    min_height: 160,
+    height : 180
+});
+
+    </script>
+{% endblock %}
+
+{% block form_elements %}
+
+<form class="form-horizontal" role="form" action="." method="post">{% csrf_token %}
+
+  <div class="form-group">
+    <label for="inputCaption" class="col-sm-1 control-label">Title</label>
+    <div class="col-sm-6">
+        <input id="caption" class="form-control" type="text" placeholder="Enter a Title (Required)" name="caption" maxlength="200" value="{{ caption }}" />
+    </div>
+  </div>
+
+<div class="form-group">
+    <label for="inputCategory" class="col-sm-1 control-label">Category</label>
+    <div class="col-sm-10">
+        <input id="id_category" name="category" type="hidden" />
+        <input id="id_category_other" name="category_other" type="text" class="collapse form-control other-input" placeholder="Enter Other Category" />
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="inputCity" class="col-sm-1 control-label">City</label>
+    <div class="col-sm-10">
+        <input id="id_city" name="city" type="hidden" />
+    </div>
+</div>
+
+<div class="form-group collapse">
+      <label for="inputArea" class="col-sm-1 control-label">Area</label>
+      <div class="col-sm-10">
+          <input id="id_area" name="area" type="hidden" />
+        </div>
+</div>
+
+<div class="form-group">
+    <label for="inputContent" class="col-sm-1 control-label">Content</label>
+    <div class="col-sm-10">
+        <textarea id="description" class="form-control" rows="4" placeholder="Enter a Description (Optional)" name="description">{{ description }}</textarea>
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="inputSubmit" class="col-sm-1 control-label"></label>
+    <div class="col-sm-10">
+        <input type="submit" class="btn btn-success" value="Submit" />
+    </div>
+</div>
+
+</form>
+{% endblock %}

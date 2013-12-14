@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'django_select2',
     'bootstrap-pagination',
     'sorl.thumbnail',
-    'cityfury'
+    'cityfury',
 )
 
 MIDDLEWARE_CLASSES = (
