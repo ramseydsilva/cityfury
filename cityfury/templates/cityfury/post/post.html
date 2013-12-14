@@ -14,6 +14,15 @@
             $('.nav-tabs a:first').tab('show')
 
             $(".info-col").css("height", $("#main").height() - $('#main nav ').outerHeight() - $('#main .breadcrumb').outerHeight());
+
+            setTimeout(function() {
+                $(".info-col").css("height", $("#main").height() - $('#main nav ').outerHeight() - $('#main .breadcrumb').outerHeight());
+            }, 2000);
+
+            setTimeout(function() {
+                $(".info-col").css("height", $("#main").height() - $('#main nav ').outerHeight() - $('#main .breadcrumb').outerHeight());
+            }, 5000);
+
             $(".comment-counter").click(function() {
                 $("textarea").focus();
             });
