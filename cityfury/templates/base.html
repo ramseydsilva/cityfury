@@ -97,7 +97,7 @@
                 <a href="/" id="logo" class="lead">CityFury</a>
             </div>
             <div class="tagline-col">
-                <p class="lead">Furiously Passionate about your City
+                <p class="lead"><span class="hidden-xs hidden-sm tagline">Furiously Passionate about your City</span>
                 <a class="header-links btn btn-success" href="{% url "post_something" %}">Post Something</a>
                     <span id="login_buttons">
                         <a class="header-links" href="https://www.facebook.com/cityfury" target="blank" title="Like us on facebook" alt="Like us on facebook"><img style="margin-top: -5px;" width="30" src="{{ STATIC_URL }}cityfury/img/facebook_like.png" /></a>
@@ -146,7 +146,18 @@
                 <div id="main">
 
                     <nav class="navbar navbar-default" role="navigation">
-                        <div class="collapse navbar-collapse lead" id="bs-example-navbar-collapse-1">
+                            <!-- Brand and toggle get grouped for better mobile display -->
+                          <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                              <span class="sr-only">Toggle navigation</span>
+                              <span class="icon-bar"></span>
+                              <span class="icon-bar"></span>
+                              <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand visible-xs" href="#">Nav</a>
+                          </div>
+
+                            <div class="collapse navbar-collapse lead" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav">
                                 <li {% if home_page %}class="active"{% endif %}><a href="{% url "home" %}">Home</a></li>
                                 <li {% block post_nav_class %}{% endblock %}><a href="{% url "posts" %}">Posts</a></li>

@@ -36,6 +36,11 @@ header .tagline-col {
     height: 100%;
 }
 
+.tagline {
+    display: block;
+    float: left;
+}
+
 #logo {
     padding: 15px;
     color: white;
@@ -76,9 +81,11 @@ header .tagline-col {
     padding: 10px 15px;
 }
 
-.navbar-collapse {
-    float: right;
-    margin-bottom: 0;
+@media(min-width:767px) {
+    .navbar-collapse {
+        float: right;
+        margin-bottom: 0;
+    }
 }
 
 #first-nav {
