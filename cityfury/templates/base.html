@@ -29,7 +29,9 @@
             }
             $(function () {
 
-                $(".full-height").css("height", $("#main").height());
+                $(window).load(function() {
+                    $(".full-height").css("height", $("#main").height());
+                });
 
                 function closeModal() {
                     $('#iframe-modal').modal('hide');
