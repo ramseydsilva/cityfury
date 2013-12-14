@@ -396,3 +396,7 @@ footer {
     max-width: 380px;
     height: auto;
 }
+
+#comment .tab-content {
+    min-height: 300px;
+}

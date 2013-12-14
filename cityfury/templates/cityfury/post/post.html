@@ -11,6 +11,8 @@
 
     <script>
         $(function () {
+            $('.nav-tabs a:first').tab('show')
+
             $(".info-col").css("height", $("#main").height() - $('#main nav ').outerHeight() - $('#main .breadcrumb').outerHeight());
             $(".comment-counter").click(function() {
                 $("textarea").focus();
@@ -127,18 +129,34 @@
             {% endif %}
 
             <div id="comment">
-                <form action="." method="post">{% csrf_token %}
-                    <textarea class="form-control" rows="3" name="comment" placeholder="{% if post.comment_set.all %}Leave a comment{% else %}Be the first to comment{% endif %}"></textarea>
-                    <input type="submit" class="btn btn-default" />
-                </form>
-                <div class="clearfix"></div>
-                {% for comment in post.comment_set.all %}
-                    <div class="comment-container">
-                        <div class="comment">{{ comment }}</div>
-                        Posted by {% if comment.user %}{{ comment.user }}{% else %}Anonymous{% endif %} at {{ comment.created_date }}
+
+                <ul class="nav nav-tabs">
+                    <li><a href="#fb-comments" data-toggle="tab">Comment via Facebook</a></li>
+                    <li><a href="#site-comments" data-toggle="tab">Comment Anonymously or via site</a></li>
+                </ul>
+
+                <br/>
+
+                <div class="tab-content">
+                    <div id="fb-comments" class="fade tab-pane">
+                        <div class="fb-comments" data-width="815" data-href="http://cityfury.com{% url "post" post.id %}" data-numposts="5" data-colorscheme="light"></div>
                     </div>
-                    <div class="clearfix"></div>
-                {% endfor %}
+
+                    <div class="tab-pane site-comments fade in active" id="site-comments">
+                        <form action="." method="post">{% csrf_token %}
+                            <textarea class="form-control" rows="3" name="comment" placeholder="{% if post.comment_set.all %}Leave a comment{% else %}Be the first to comment{% endif %}"></textarea>
+                            <input type="submit" class="btn btn-default" />
+                        </form>
+                        <div class="clearfix"></div>
+                        {% for comment in post.comment_set.all %}
+                            <div class="comment-container">
+                                <div class="comment">{{ comment }}</div>
+                                Posted by {% if comment.user %}{{ comment.user }}{% else %}Anonymous{% endif %} at {{ comment.created_date }}
+                            </div>
+                            <div class="clearfix"></div>
+                        {% endfor %}
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -187,5 +205,14 @@
   });
 </script>
 <!-- AddThis Smart Layers END -->
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1440272012862772";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
 {% endblock %}
