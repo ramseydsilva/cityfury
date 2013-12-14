@@ -1,6 +1,8 @@
 {% extends "cityfury/post/posts.html" %}
 {% load thumbnail %}
 
+{% block title %}{{ post.caption }}{% endblock %}
+
 {% block extra_head %}
 
     <script>
