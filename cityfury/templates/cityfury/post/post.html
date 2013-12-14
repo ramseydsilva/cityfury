@@ -5,6 +5,10 @@
 
 {% block extra_head %}
 
+    <!-- for Facebook -->
+    <meta property="og:title" content="{{ post.caption }}" /> 
+    <meta property="og:description" content="{{ post.description|striptags }}" /> 
+
     <script>
         $(function () {
             $(".info-col").css("height", $("#main").height() - $('#main nav ').outerHeight() - $('#main .breadcrumb').outerHeight());
