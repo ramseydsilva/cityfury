@@ -58,6 +58,13 @@ ROOT_URLCONF = 'cityfury.urls'
 WSGI_APPLICATION = 'cityfury.wsgi.application'
 
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
+    }
+}
+
 from local_settings import *
 
 # Internationalization

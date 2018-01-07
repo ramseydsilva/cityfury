@@ -2,3 +2,5 @@
 *.pyc
 /db.sqlite3
 /cityfury/local_settings.py
+
+/mydatabase
